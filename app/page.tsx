@@ -1,28 +1,29 @@
-import { createClient } from "../lib/supabase/server";
-import Link from "next/link";
-import SignOutButton from "components/SignOutButton";
-import { adelia } from "fonts/fonts";
-import { kindergarten } from "fonts/fonts";
+import { supabase } from "../lib/supabase";
+import { redirect } from "next/navigation"
 
+export default function Page() {
+    redirect("/home")
+}
 
-export default async function HomePage() {
-    const supabase = await createClient();
+export default async function Home() {
+    const { data, error, count } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact" })
+        .limit(10);
 
-    // Who is logged in (this ALWAYS has your email if signed in)
-    const { data: authData } = await supabase.auth.getUser();
-    const myAuthEmail = authData.user?.email ?? "(no auth email)";
-
+    if (error) {
+        return <pre>{JSON.stringify(error, null, 2)}</pre>
+    }
 
     return (
-        <main style={{ padding: 24 }}>
-            <h1 className={adelia.className}>Home</h1>
-            <div style={{marginBottom:30}}><SignOutButton /></div>
-            {/*<p>Signed in as (from auth): {myAuthEmail}</p>*/}
+        <main>
+            <h1>Emails from profiles</h1>
 
-            <div className={kindergarten.className} style={{ fontSize: "20px", fontWeight: "bold" }}><Link href="../users">View all registered users</Link></div>
-            <div className={kindergarten.className} style={{ fontSize: "20px", fontWeight: "bold" }}><Link href="../images">View all images</Link></div>
-            <div className={kindergarten.className} style={{ fontSize: "20px", fontWeight: "bold" }}><Link href="../captions">View all captions</Link></div>
-
+            <ul>
+                {data?.map((row, i) => (
+                    <li key={i}>{row.email}</li>
+                ))}
+            </ul>
         </main>
     );
 }
