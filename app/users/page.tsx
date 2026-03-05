@@ -1,11 +1,14 @@
-import { createClient } from "../../../lib/supabase/server";
+import { createClient } from "../../lib/supabase/server";
+import { adelia } from "../fonts/fonts";
+import { kindergarten } from "../fonts/fonts";
+import { fors } from "../fonts/fonts";
 
 export default async function UsersPage() {
     const supabase = await createClient();
 
     const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("id,email")
+        .select("id,email,first_name,last_name")
         .not("email", "is", null);
 
     if (error) {
@@ -19,11 +22,13 @@ export default async function UsersPage() {
 
     return (
         <main style={{ padding: 24 }}>
-            <h1>Registered Users</h1>
+            <h1 className={adelia.className}>Registered Users</h1>
 
-            <ul>
+            <ul className={fors.className}>
                 {profiles?.map((profile) => (
-                    <li key={profile.id}>{profile.email}</li>
+                    <li key={profile.id}>
+                        {profile.first_name} {profile.last_name} — {profile.email}
+                    </li>
                 ))}
             </ul>
         </main>

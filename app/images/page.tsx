@@ -1,0 +1,124 @@
+import ScrollingImageWall from "../components/ScrollingImageWall";
+import { createClient } from "../../lib/supabase/server";
+import { adelia } from "../fonts/fonts";
+import { kindergarten } from "../fonts/fonts";
+import { fors } from "../fonts/fonts";
+
+
+
+async function createImage(formData: FormData) {
+    "use server";
+    const supabase = await createClient();
+
+    const url = String(formData.get("url") ?? "").trim();
+    if (!url) return;
+
+    await supabase.from("images").insert({ url });
+}
+
+async function updateImageByUrl(formData: FormData) {
+    "use server";
+    const supabase = await createClient();
+
+    const oldUrl = String(formData.get("oldUrl") ?? "").trim();
+    const newUrl = String(formData.get("newUrl") ?? "").trim();
+    if (!oldUrl || !newUrl) return;
+
+    // Update every row that matches oldUrl (usually should be 1)
+    await supabase.from("images").update({ url: newUrl }).eq("url", oldUrl);
+}
+
+async function deleteImageByUrl(formData: FormData) {
+    "use server";
+    const supabase = await createClient();
+
+    const url = String(formData.get("url") ?? "").trim();
+    if (!url) return;
+
+    await supabase.from("images").delete().eq("url", url);
+}
+
+export default async function AdminImagesPage() {
+    const supabase = await createClient();
+
+    // READ: fetch urls for the scrolling wall (dedupe)
+    const { data, error } = await supabase
+        .from("images")
+        .select("url")
+        .not("url", "is", null)
+        .limit(500);
+
+    if (error) {
+        return (
+            <main style={{ padding: 24 }}>
+                <h1>Images</h1>
+                <pre>{JSON.stringify(error, null, 2)}</pre>
+            </main>
+        );
+    }
+
+    const uniqueUrls = Array.from(new Set((data ?? []).map((r) => r.url).filter(Boolean)));
+
+    return (
+        <main style={{ padding: 24 }}>
+            <h1 className={adelia.className}>Images</h1>
+
+            {/* CREATE */}
+            <h2 className={kindergarten.className}>Add Image</h2>
+            <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                    name="url"
+                    placeholder="https://example.com/image.jpg"
+                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button type="submit" style={{fontSize: "15px", fontWeight: "bold"}} className={kindergarten.className}>Create</button>
+            </form>
+
+            <hr style={{ margin: "24px 0" }} />
+
+            {/* UPDATE by URL */}
+            <h2 className={kindergarten.className}>Update Existing Image</h2>
+            <form action={updateImageByUrl} style={{ display: "grid", gap: 8, maxWidth: 900 }} className={fors.className}>
+                <input
+                    name="oldUrl"
+                    placeholder="Old Image URL"
+                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <input
+                    name="newUrl"
+                    placeholder="New Image URL"
+                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button type="submit" style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }} className={kindergarten.className}>
+                    Update
+                </button>
+            </form>
+
+            <hr style={{ margin: "24px 0" }} />
+
+            {/* DELETE by URL */}
+            <h2 className={kindergarten.className}>Delete Image</h2>
+            <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                    name="url"
+                    placeholder="https://example.com/image.jpg"
+                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button type="submit" style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }} className={kindergarten.className}>
+                    Delete
+                </button>
+            </form>
+
+
+            <hr style={{ margin: "24px 0" }} />
+
+            {/* READ (fun visual browse) */}
+            <ScrollingImageWall urls={uniqueUrls} rows={6} height={140} />
+
+        </main>
+    );
+}
