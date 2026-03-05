@@ -1,9 +1,5 @@
 import { supabase } from "../lib/supabase";
-import { redirect } from "next/navigation"
 
-export default function Page() {
-    redirect("/home")
-}
 
 export default async function Home() {
     const { data, error, count } = await supabase
