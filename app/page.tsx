@@ -1,8 +1,8 @@
-import { createClient } from "../../lib/supabase/server";
+import { createClient } from "../lib/supabase/server";
 import Link from "next/link";
-import SignOutButton from "../components/SignOutButton";
-import { adelia } from "../fonts/fonts";
-import { kindergarten } from "../fonts/fonts";
+import SignOutButton from "components/SignOutButton";
+import { adelia } from "fonts/fonts";
+import { kindergarten } from "fonts/fonts";
 
 
 export default async function HomePage() {
