@@ -1,18 +1,28 @@
 import { createClient } from "../lib/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import SignOutButton from "./admin/components/SignOutButton";
 import { adelia } from "./admin/fonts/fonts";
 import { kindergarten } from "./admin/fonts/fonts";
 
+
 export default async function Home() {
     const supabase = await createClient();
+
+    // 🔐 check if user is logged in
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        redirect("/login");
+    }
 
     const [{ count: userCount }, { count: imageCount }, { count: captionCount }] =
         await Promise.all([
             supabase
                 .from("profiles")
                 .select("*", { count: "exact", head: true }),
-                // .not("email", "is", null),
             supabase.from("images").select("*", { count: "exact", head: true }),
             supabase.from("captions").select("*", { count: "exact", head: true }),
         ]);
