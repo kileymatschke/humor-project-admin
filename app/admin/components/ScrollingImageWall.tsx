@@ -1,11 +1,25 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function chunkIntoRows<T>(items: T[], rows: number) {
     const out: T[][] = Array.from({ length: rows }, () => []);
     items.forEach((item, i) => out[i % rows].push(item));
     return out;
+}
+
+function isValidUrl(url: string) {
+    if (!url || typeof url !== "string") return false;
+
+    const trimmed = url.trim();
+    if (!trimmed) return false;
+
+    try {
+        new URL(trimmed);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export default function ScrollingImageWall({
@@ -17,23 +31,39 @@ export default function ScrollingImageWall({
     rows?: number;
     height?: number;
 }) {
-    // Repeat images if there aren't many so scrolling looks full
+    const validUrls = useMemo(() => {
+        return urls.filter(isValidUrl);
+    }, [urls]);
+
+    const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set());
+
+    const visibleUrls = useMemo(() => {
+        return validUrls.filter((u) => !failedUrls.has(u));
+    }, [validUrls, failedUrls]);
+
     const filledUrls = useMemo(() => {
-        if (urls.length === 0) return [];
+        if (visibleUrls.length === 0) return [];
+
         const min = Math.max(30, rows * 10);
         const out: string[] = [];
-        for (let i = 0; i < min; i++) out.push(urls[i % urls.length]);
-        return out;
-    }, [urls, rows]);
 
-    const rowData = useMemo(() => chunkIntoRows(filledUrls, rows), [filledUrls, rows]);
+        for (let i = 0; i < min; i++) {
+            out.push(visibleUrls[i % visibleUrls.length]);
+        }
+
+        return out;
+    }, [visibleUrls, rows]);
+
+    const rowData = useMemo(() => {
+        return chunkIntoRows(filledUrls, rows);
+    }, [filledUrls, rows]);
 
     return (
         <div className="wall">
             {rowData.map((row, idx) => {
-                const doubled = [...row, ...row]; // seamless loop
+                const doubled = [...row, ...row];
 
-                const duration = 30 + (idx % 3) * 8; // vary speed
+                const duration = 30 + (idx % 3) * 8;
                 const reverse = idx % 2 === 1;
 
                 return (
@@ -41,15 +71,26 @@ export default function ScrollingImageWall({
                         key={idx}
                         className="row"
                         style={{ height }}
-                        ref={(el) => {
-                            if (el) el.style.setProperty("--dur", `${duration}s`);
-                        }}
                     >
-                        <div className={`track ${reverse ? "reverse" : ""}`}>
+                        <div
+                            className={`track ${reverse ? "reverse" : ""}`}
+                            style={{ animationDuration: `${duration}s` }}
+                        >
                             {doubled.map((src, i) => (
-                                <div className="card" key={`${idx}-${i}`}>
+                                <div className="card" key={`${idx}-${i}-${src}`}>
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={src} alt="" loading="lazy" />
+                                    <img
+                                        src={src}
+                                        alt="Gallery image"
+                                        loading="lazy"
+                                        onError={() => {
+                                            setFailedUrls((prev) => {
+                                                const next = new Set(prev);
+                                                next.add(src);
+                                                return next;
+                                            });
+                                        }}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -73,7 +114,6 @@ export default function ScrollingImageWall({
                     position: relative;
                 }
 
-                /* edge fade */
                 .row::before,
                 .row::after {
                     content: "";
@@ -110,7 +150,10 @@ export default function ScrollingImageWall({
                     gap: 12px;
                     padding: 10px 12px;
                     width: max-content;
-                    animation: scroll var(--dur) linear infinite;
+
+                    animation-name: scroll;
+                    animation-timing-function: linear;
+                    animation-iteration-count: infinite;
                 }
 
                 .track.reverse {
@@ -146,6 +189,12 @@ export default function ScrollingImageWall({
 
                 .card:hover img {
                     transform: scale(1.04);
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .track {
+                        animation: none;
+                    }
                 }
             `}</style>
         </div>
