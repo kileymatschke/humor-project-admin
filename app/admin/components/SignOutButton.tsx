@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "../../lib/supabase/browser";
+import { createClient } from "../../../lib/supabase/browser";
 import { adelia } from "../fonts/fonts";
 
 export default function SignOutButton() {

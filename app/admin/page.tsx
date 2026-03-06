@@ -1,7 +1,7 @@
 import { createClient } from "../../lib/supabase/server";
 
 export default async function AdminPage() {
-    const supabase = await createClient();  // ✅ await here
+    const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
 
     const email = data.user?.email ?? "(no user)";

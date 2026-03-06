@@ -1,10 +1,9 @@
-import ScrollingImageWall from "../components/ScrollingImageWall";
-import { createClient } from "../../lib/supabase/server";
+import ScrollingImageWallClient from "../components/ScrollingImageWallClient";
+
+import { createClient } from "../../../lib/supabase/server";
 import { adelia } from "../fonts/fonts";
 import { kindergarten } from "../fonts/fonts";
 import { fors } from "../fonts/fonts";
-
-
 
 async function createImage(formData: FormData) {
     "use server";
@@ -24,7 +23,6 @@ async function updateImageByUrl(formData: FormData) {
     const newUrl = String(formData.get("newUrl") ?? "").trim();
     if (!oldUrl || !newUrl) return;
 
-    // Update every row that matches oldUrl (usually should be 1)
     await supabase.from("images").update({ url: newUrl }).eq("url", oldUrl);
 }
 
@@ -38,10 +36,15 @@ async function deleteImageByUrl(formData: FormData) {
     await supabase.from("images").delete().eq("url", url);
 }
 
-export default async function AdminImagesPage() {
+export default async function AdminImagesPage({
+                                                  searchParams,
+                                              }: {
+    searchParams: Promise<{ lookup?: string }>;
+}) {
     const supabase = await createClient();
+    const params = await searchParams;
+    const lookupUrl = String(params.lookup ?? "").trim();
 
-    // READ: fetch urls for the scrolling wall (dedupe)
     const { data, error } = await supabase
         .from("images")
         .select("url")
@@ -59,9 +62,70 @@ export default async function AdminImagesPage() {
 
     const uniqueUrls = Array.from(new Set((data ?? []).map((r) => r.url).filter(Boolean)));
 
+    let matchedImage: { url: string } | null = null;
+
+    if (lookupUrl) {
+        const { data: foundImage } = await supabase
+            .from("images")
+            .select("url")
+            .eq("url", lookupUrl)
+            .maybeSingle();
+
+        if (foundImage?.url) {
+            matchedImage = foundImage;
+        }
+    }
+
     return (
         <main style={{ padding: 24 }}>
             <h1 className={adelia.className}>Images</h1>
+
+
+            {/* LOOKUP */}
+            <h2 className={kindergarten.className}>Look Up Image by URL</h2>
+            <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                    name="lookup"
+                    defaultValue={lookupUrl}
+                    placeholder="Paste image URL here"
+                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button
+                    type="submit"
+                    style={{ fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
+                    Look Up
+                </button>
+            </form>
+
+            {lookupUrl && (
+                <div style={{ marginTop: 20 }}>
+                    {matchedImage ? (
+                        <>
+                            <p className={fors.className} style={{ fontWeight: "bold" }}>
+                                Matching image:
+                            </p>
+                            <img
+                                src={matchedImage.url}
+                                alt="Looked up image"
+                                style={{
+                                    maxWidth: "400px",
+                                    width: "100%",
+                                    height: "auto",
+                                    borderRadius: 12,
+                                    border: "1px solid #ccc",
+                                }}
+                            />
+                        </>
+                    ) : (
+                        <p className={fors.className}>No image found for that URL.</p>
+                    )}
+                </div>
+            )}
+
+            <hr style={{ margin: "24px 0" }} />
 
             {/* CREATE */}
             <h2 className={kindergarten.className}>Add Image</h2>
@@ -72,12 +136,18 @@ export default async function AdminImagesPage() {
                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
                     className={fors.className}
                 />
-                <button type="submit" style={{fontSize: "15px", fontWeight: "bold"}} className={kindergarten.className}>Create</button>
+                <button
+                    type="submit"
+                    style={{ fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
+                    Create
+                </button>
             </form>
 
             <hr style={{ margin: "24px 0" }} />
 
-            {/* UPDATE by URL */}
+            {/* UPDATE */}
             <h2 className={kindergarten.className}>Update Existing Image</h2>
             <form action={updateImageByUrl} style={{ display: "grid", gap: 8, maxWidth: 900 }} className={fors.className}>
                 <input
@@ -92,14 +162,18 @@ export default async function AdminImagesPage() {
                     style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
                     className={fors.className}
                 />
-                <button type="submit" style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }} className={kindergarten.className}>
+                <button
+                    type="submit"
+                    style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
                     Update
                 </button>
             </form>
 
             <hr style={{ margin: "24px 0" }} />
 
-            {/* DELETE by URL */}
+            {/* DELETE */}
             <h2 className={kindergarten.className}>Delete Image</h2>
             <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
@@ -108,17 +182,20 @@ export default async function AdminImagesPage() {
                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
                     className={fors.className}
                 />
-                <button type="submit" style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }} className={kindergarten.className}>
+                <button
+                    type="submit"
+                    style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
                     Delete
                 </button>
             </form>
 
-
             <hr style={{ margin: "24px 0" }} />
 
-            {/* READ (fun visual browse) */}
-            <ScrollingImageWall urls={uniqueUrls} rows={6} height={140} />
 
-        </main>
+
+            {/* READ */}
+            <ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />        </main>
     );
 }

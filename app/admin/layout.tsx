@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         .eq("id", auth.user.id)
         .single();
 
-    if (!profile?.is_superadmin) redirect("/home");
+    if (!profile?.is_superadmin) redirect("/");
 
     return <>{children}</>;
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { createClient } from "../../lib/supabase/browser";
+import { adelia } from "../admin/fonts/fonts";
+import { kindergarten } from "../admin/fonts/fonts";
 
 export default function LoginPage() {
     const supabase = createClient();
@@ -19,9 +21,25 @@ export default function LoginPage() {
     }
 
     return (
-        <main style={{ padding: 24 }}>
-            <h1>Login</h1>
-            <button onClick={signInWithGoogle}>Sign in with Google</button>
+        <main
+            style={{
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "20px"
+            }}
+        >
+            <h1 style={{ fontSize: "40px"}} className={adelia.className}>Sign in</h1>
+
+            <button
+                onClick={signInWithGoogle}
+                style={{ fontSize: "20px", fontWeight: "bold" }}
+                className={kindergarten.className}
+            >
+                Sign in with Google
+            </button>
         </main>
     );
 }
