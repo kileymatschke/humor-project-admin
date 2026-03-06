@@ -2,6 +2,8 @@ import { createClient } from "../../../lib/supabase/server";
 import { adelia } from "../fonts/fonts";
 import { kindergarten } from "../fonts/fonts";
 import { fors } from "../fonts/fonts";
+import Link from "next/link";
+
 
 type Profile = {
     id: string;
@@ -161,6 +163,15 @@ export default async function UsersPage() {
             `}</style>
 
             <h1 className={adelia.className}>User Emails</h1>
+
+            <div
+                className={kindergarten.className}
+                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
+            >
+                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
+                    ← Back to dashboard
+                </Link>
+            </div>
 
             {/*<div*/}
             {/*    className={kindergarten.className}*/}

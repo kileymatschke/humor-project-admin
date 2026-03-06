@@ -2,6 +2,7 @@ import { createClient } from "../../../lib/supabase/server";
 import { adelia } from "../fonts/fonts";
 import { fors } from "../fonts/fonts";
 import { kindergarten } from "../fonts/fonts";
+import Link from "next/link";
 
 export default async function CaptionsPage() {
     const supabase = await createClient();
@@ -83,6 +84,15 @@ export default async function CaptionsPage() {
             `}</style>
 
             <h1 className={adelia.className}>Captions</h1>
+
+            <div
+                className={kindergarten.className}
+                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
+            >
+                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
+                    ← Back to dashboard
+                </Link>
+            </div>
 
             {/*<div*/}
             {/*    className={kindergarten.className}*/}

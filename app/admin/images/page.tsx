@@ -4,15 +4,32 @@ import { createClient } from "../../../lib/supabase/server";
 import { adelia } from "../fonts/fonts";
 import { kindergarten } from "../fonts/fonts";
 import { fors } from "../fonts/fonts";
+import Link from "next/link";
+
 
 async function createImage(formData: FormData) {
     "use server";
+
     const supabase = await createClient();
 
     const url = String(formData.get("url") ?? "").trim();
     if (!url) return;
 
-    await supabase.from("images").insert({ url });
+    const id = crypto.randomUUID(); // generates UUID like 653a7479-845a-4427-8be1-869793848ee2
+
+    const created_datetime_utc = new Date().toISOString(); // UTC timestamp
+    const modified_datetime_utc = new Date().toISOString(); // UTC timestamp
+
+    const { error } = await supabase.from("images").insert({
+        id,
+        created_datetime_utc,
+        modified_datetime_utc,
+        url,
+    });
+
+    if (error) {
+        console.error(error);
+    }
 }
 
 async function updateImageByUrl(formData: FormData) {
@@ -80,6 +97,14 @@ export default async function AdminImagesPage({
         <main style={{ padding: 24 }}>
             <h1 className={adelia.className}>Images</h1>
 
+            <div
+                className={kindergarten.className}
+                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
+            >
+                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
+                    ← Back to dashboard
+                </Link>
+            </div>
 
             {/* LOOKUP */}
             <h2 className={kindergarten.className}>Look Up Image by URL</h2>
