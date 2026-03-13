@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
 import { adelia, fors, kindergarten } from "../fonts/fonts";
 import ExpandableTable from "../components/ExpandableTable";
+import type { CSSProperties } from "react";
 
 type PageProps = {
     searchParams?: Promise<{
@@ -76,26 +77,6 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Humor Flavor Mix</h1>
 
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
-            {/*>*/}
-            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
-            {/*        ← Back to dashboard*/}
-            {/*    </Link>*/}
-            {/*</div>*/}
-
-            {/*<div*/}
-            {/*    className={fors.className}*/}
-            {/*    style={{*/}
-            {/*        marginTop: 16,*/}
-            {/*        marginBottom: 16,*/}
-            {/*        fontSize: 16,*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    Showing page {page} ({rows.length} rows loaded)*/}
-            {/*</div>*/}
-
             <div
                 style={{
                     display: "flex",
@@ -161,7 +142,6 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
                 </form>
             </section>
 
-
             <div
                 className={fors.className}
                 style={{
@@ -173,13 +153,12 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
                 Showing page {page} ({rows.length} rows loaded)
             </div>
 
-
             <ExpandableTable rows={rows} columns={columns} />
         </main>
     );
 }
 
-const sectionStyle: React.CSSProperties = {
+const sectionStyle: CSSProperties = {
     marginBottom: 28,
     padding: 16,
     border: "1px solid #ddd",
@@ -187,30 +166,30 @@ const sectionStyle: React.CSSProperties = {
     backgroundColor: "#fff",
 };
 
-const sectionTitleStyle: React.CSSProperties = {
+const sectionTitleStyle: CSSProperties = {
     marginTop: 0,
     marginBottom: 14,
 };
 
-const formGridStyle: React.CSSProperties = {
+const formGridStyle: CSSProperties = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: 12,
 };
 
-const labelStyle: React.CSSProperties = {
+const labelStyle: CSSProperties = {
     display: "flex",
     flexDirection: "column",
     gap: 6,
 };
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
     padding: "10px 12px",
     border: "1px solid #ccc",
     borderRadius: 8,
 };
 
-const buttonStyle: React.CSSProperties = {
+const buttonStyle: CSSProperties = {
     padding: "10px 14px",
     border: "1px solid #ccc",
     borderRadius: 10,
@@ -218,7 +197,7 @@ const buttonStyle: React.CSSProperties = {
     cursor: "pointer",
 };
 
-const navButtonStyle: React.CSSProperties = {
+const navButtonStyle: CSSProperties = {
     textDecoration: "none",
     color: "black",
     border: "1px solid #ccc",

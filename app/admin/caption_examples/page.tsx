@@ -1,11 +1,12 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
-import { adelia, fors, kindergarten } from "../fonts/fonts";
+import { adelia, fors } from "../fonts/fonts";
 import ExpandableTable from "../components/ExpandableTable";
 
 type PageProps = {
     searchParams?: Promise<{
+        section?: string;
         page?: string;
     }>;
 };
@@ -135,16 +136,6 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Caption Examples</h1>
 
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{ marginTop: 6, marginBottom: 18, fontSize: 16, fontWeight: 700 }}*/}
-            {/*>*/}
-            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
-            {/*        ← Back to dashboard*/}
-            {/*    </Link>*/}
-            {/*</div>*/}
-
-
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
                     Create Caption Example
@@ -226,7 +217,6 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                 </form>
             </section>
 
-
             <div
                 className={fors.className}
                 style={{
@@ -248,7 +238,13 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
             >
                 {page > 1 && (
                     <Link
-                        href={`?page=${page - 1}`}
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "caption-examples",
+                                page: String(page - 1),
+                            },
+                        }}
                         className={fors.className}
                         style={navButtonStyle}
                     >
@@ -258,7 +254,13 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
 
                 {rows.length === pageSize && (
                     <Link
-                        href={`?page=${page + 1}`}
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "caption-examples",
+                                page: String(page + 1),
+                            },
+                        }}
                         className={fors.className}
                         style={navButtonStyle}
                     >

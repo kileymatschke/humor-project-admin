@@ -1,9 +1,10 @@
 import { createClient } from "../../../lib/supabase/server";
-import { adelia, kindergarten, fors } from "../fonts/fonts";
+import { adelia, fors } from "../fonts/fonts";
 import Link from "next/link";
 
 type PageProps = {
     searchParams?: Promise<{
+        section?: string;
         page?: string;
     }>;
 };
@@ -41,27 +42,6 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>LLM Prompt Chains</h1>
 
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
-            {/*>*/}
-            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
-            {/*        ← Back to dashboard*/}
-            {/*    </Link>*/}
-            {/*</div>*/}
-
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{*/}
-            {/*        fontSize: "20px",*/}
-            {/*        fontWeight: "bold",*/}
-            {/*        marginTop: 16,*/}
-            {/*        marginBottom: 8,*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    Total Rows: {totalRows}*/}
-            {/*</div>*/}
-
             <div
                 className={fors.className}
                 style={{ marginBottom: 16, fontSize: 16 }}
@@ -79,16 +59,15 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
             >
                 {page > 1 && (
                     <Link
-                        href={`?page=${page - 1}`}
-                        className={fors.className}
-                        style={{
-                            textDecoration: "none",
-                            color: "black",
-                            border: "1px solid #ccc",
-                            padding: "8px 14px",
-                            borderRadius: "10px",
-                            backgroundColor: "#f5f5f5",
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "llm-prompt-chains",
+                                page: String(page - 1),
+                            },
                         }}
+                        className={fors.className}
+                        style={navButtonStyle}
                     >
                         ← Previous
                     </Link>
@@ -96,16 +75,15 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
 
                 {page < totalPages && (
                     <Link
-                        href={`?page=${page + 1}`}
-                        className={fors.className}
-                        style={{
-                            textDecoration: "none",
-                            color: "black",
-                            border: "1px solid #ccc",
-                            padding: "8px 14px",
-                            borderRadius: "10px",
-                            backgroundColor: "#f5f5f5",
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "llm-prompt-chains",
+                                page: String(page + 1),
+                            },
                         }}
+                        className={fors.className}
+                        style={navButtonStyle}
                     >
                         Next →
                     </Link>
@@ -178,3 +156,12 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
         </main>
     );
 }
+
+const navButtonStyle: React.CSSProperties = {
+    textDecoration: "none",
+    color: "black",
+    border: "1px solid #ccc",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#f5f5f5",
+};

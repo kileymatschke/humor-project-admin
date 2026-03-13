@@ -1,10 +1,11 @@
 import { createClient } from "../../../lib/supabase/server";
-import { adelia, fors, kindergarten } from "../fonts/fonts";
+import { adelia, fors } from "../fonts/fonts";
 import Link from "next/link";
 import ExpandableTable from "../components/ExpandableTable";
 
 type PageProps = {
     searchParams?: Promise<{
+        section?: string;
         page?: string;
     }>;
 };
@@ -41,15 +42,6 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>LLM Model Responses</h1>
 
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
-            {/*>*/}
-            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
-            {/*        ← Back to dashboard*/}
-            {/*    </Link>*/}
-            {/*</div>*/}
-
             <div
                 className={fors.className}
                 style={{
@@ -71,16 +63,15 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
             >
                 {page > 1 && (
                     <Link
-                        href={`?page=${page - 1}`}
-                        className={fors.className}
-                        style={{
-                            textDecoration: "none",
-                            color: "black",
-                            border: "1px solid #ccc",
-                            padding: "8px 14px",
-                            borderRadius: "10px",
-                            backgroundColor: "#f5f5f5",
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "llm-model-responses",
+                                page: String(page - 1),
+                            },
                         }}
+                        className={fors.className}
+                        style={navButtonStyle}
                     >
                         ← Previous
                     </Link>
@@ -88,16 +79,15 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
 
                 {rows.length === pageSize && (
                     <Link
-                        href={`?page=${page + 1}`}
-                        className={fors.className}
-                        style={{
-                            textDecoration: "none",
-                            color: "black",
-                            border: "1px solid #ccc",
-                            padding: "8px 14px",
-                            borderRadius: "10px",
-                            backgroundColor: "#f5f5f5",
+                        href={{
+                            pathname: "/",
+                            query: {
+                                section: "llm-model-responses",
+                                page: String(page + 1),
+                            },
                         }}
+                        className={fors.className}
+                        style={navButtonStyle}
                     >
                         Next →
                     </Link>
@@ -108,3 +98,12 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
         </main>
     );
 }
+
+const navButtonStyle: React.CSSProperties = {
+    textDecoration: "none",
+    color: "black",
+    border: "1px solid #ccc",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#f5f5f5",
+};

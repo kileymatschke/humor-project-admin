@@ -2,7 +2,7 @@ import ScrollingImageWallClient from "../components/ScrollingImageWallClient";
 import ExpandableTable from "../components/ExpandableTable";
 
 import { createClient } from "../../../lib/supabase/server";
-import { adelia, kindergarten, fors } from "../fonts/fonts";
+import { adelia, fors } from "../fonts/fonts";
 import Link from "next/link";
 
 async function createImage(formData: FormData) {
@@ -62,7 +62,7 @@ async function deleteImageByUrl(formData: FormData) {
 export default async function AdminImagesPage({
                                                   searchParams,
                                               }: {
-    searchParams?: Promise<{ lookup?: string; page?: string }>;
+    searchParams?: Promise<{ lookup?: string; page?: string; section?: string }>;
 }) {
     const supabase = await createClient();
 
@@ -75,7 +75,6 @@ export default async function AdminImagesPage({
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    // Table data: all columns, paginated
     const { data: tableData, error: tableError } = await supabase
         .from("images")
         .select("*")
@@ -94,7 +93,6 @@ export default async function AdminImagesPage({
     const rows = tableData ?? [];
     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
-    // Gallery data: keep separate so the wall still has plenty of images
     const { data: galleryData, error: galleryError } = await supabase
         .from("images")
         .select("url")
@@ -128,26 +126,9 @@ export default async function AdminImagesPage({
         }
     }
 
-    const prevHref = lookupUrl
-        ? `?page=${page - 1}&lookup=${encodeURIComponent(lookupUrl)}`
-        : `?page=${page - 1}`;
-
-    const nextHref = lookupUrl
-        ? `?page=${page + 1}&lookup=${encodeURIComponent(lookupUrl)}`
-        : `?page=${page + 1}`;
-
     return (
         <main style={{ padding: 24 }}>
             <h1 className={adelia.className}>Images</h1>
-
-            {/*<div*/}
-            {/*    className={kindergarten.className}*/}
-            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
-            {/*>*/}
-            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
-            {/*        ← Back to dashboard*/}
-            {/*    </Link>*/}
-            {/*</div>*/}
 
             <h2 className={fors.className}>Add Image</h2>
             <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -218,6 +199,7 @@ export default async function AdminImagesPage({
 
             <h2 className={fors.className}>Display Image by URL</h2>
             <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input type="hidden" name="section" value="images" />
                 <input
                     name="lookup"
                     defaultValue={lookupUrl}
@@ -280,7 +262,19 @@ export default async function AdminImagesPage({
             >
                 {page > 1 && (
                     <Link
-                        href={prevHref}
+                        href={{
+                            pathname: "/",
+                            query: lookupUrl
+                                ? {
+                                    section: "images",
+                                    page: String(page - 1),
+                                    lookup: lookupUrl,
+                                }
+                                : {
+                                    section: "images",
+                                    page: String(page - 1),
+                                },
+                        }}
                         className={fors.className}
                         style={navButtonStyle}
                     >
@@ -290,7 +284,19 @@ export default async function AdminImagesPage({
 
                 {rows.length === pageSize && (
                     <Link
-                        href={nextHref}
+                        href={{
+                            pathname: "/",
+                            query: lookupUrl
+                                ? {
+                                    section: "images",
+                                    page: String(page + 1),
+                                    lookup: lookupUrl,
+                                }
+                                : {
+                                    section: "images",
+                                    page: String(page + 1),
+                                },
+                        }}
                         className={fors.className}
                         style={navButtonStyle}
                     >
@@ -301,9 +307,8 @@ export default async function AdminImagesPage({
 
             <ExpandableTable rows={rows} columns={columns} />
 
-            <hr style={{ margin: "24px 0" }} />
-
-            <ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />
+            {/*<hr style={{ margin: "24px 0" }} />*/}
+            {/*<ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />*/}
         </main>
     );
 }
@@ -316,3 +321,315 @@ const navButtonStyle: React.CSSProperties = {
     borderRadius: "10px",
     backgroundColor: "#f5f5f5",
 };
+
+
+
+// import ScrollingImageWallClient from "../components/ScrollingImageWallClient";
+// import ExpandableTable from "../components/ExpandableTable";
+//
+// import { createClient } from "../../../lib/supabase/server";
+// import { adelia, fors } from "../fonts/fonts";
+// import Link from "next/link";
+//
+// async function createImage(formData: FormData) {
+//     "use server";
+//
+//     const supabase = await createClient();
+//
+//     const url = String(formData.get("url") ?? "").trim();
+//     if (!url) return;
+//
+//     const id = crypto.randomUUID();
+//
+//     const created_datetime_utc = new Date().toISOString();
+//     const modified_datetime_utc = new Date().toISOString();
+//
+//     const { error } = await supabase.from("images").insert({
+//         id,
+//         created_datetime_utc,
+//         modified_datetime_utc,
+//         url,
+//     });
+//
+//     if (error) {
+//         console.error(error);
+//     }
+// }
+//
+// async function updateImageByUrl(formData: FormData) {
+//     "use server";
+//
+//     const supabase = await createClient();
+//
+//     const oldUrl = String(formData.get("oldUrl") ?? "").trim();
+//     const newUrl = String(formData.get("newUrl") ?? "").trim();
+//     if (!oldUrl || !newUrl) return;
+//
+//     await supabase
+//         .from("images")
+//         .update({
+//             url: newUrl,
+//             modified_datetime_utc: new Date().toISOString(),
+//         })
+//         .eq("url", oldUrl);
+// }
+//
+// async function deleteImageByUrl(formData: FormData) {
+//     "use server";
+//
+//     const supabase = await createClient();
+//
+//     const url = String(formData.get("url") ?? "").trim();
+//     if (!url) return;
+//
+//     await supabase.from("images").delete().eq("url", url);
+// }
+//
+// export default async function AdminImagesPage({
+//                                                   searchParams,
+//                                               }: {
+//     searchParams?: Promise<{ lookup?: string; page?: string }>;
+// }) {
+//     const supabase = await createClient();
+//
+//     const params = (await searchParams) ?? {};
+//
+//     const lookupUrl = String(params.lookup ?? "").trim();
+//     const page = Math.max(Number(params.page ?? "1"), 1);
+//
+//     const pageSize = 100;
+//     const from = (page - 1) * pageSize;
+//     const to = from + pageSize - 1;
+//
+//     const { data: tableData, error: tableError } = await supabase
+//         .from("images")
+//         .select("*")
+//         .order("created_datetime_utc", { ascending: false })
+//         .range(from, to);
+//
+//     if (tableError) {
+//         return (
+//             <main style={{ padding: 24 }}>
+//                 <h1>Images</h1>
+//                 <pre>{JSON.stringify(tableError, null, 2)}</pre>
+//             </main>
+//         );
+//     }
+//
+//     const rows = tableData ?? [];
+//     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
+//
+//     const { data: galleryData, error: galleryError } = await supabase
+//         .from("images")
+//         .select("url")
+//         .not("url", "is", null)
+//         .limit(500);
+//
+//     if (galleryError) {
+//         return (
+//             <main style={{ padding: 24 }}>
+//                 <h1>Images</h1>
+//                 <pre>{JSON.stringify(galleryError, null, 2)}</pre>
+//             </main>
+//         );
+//     }
+//
+//     const uniqueUrls = Array.from(
+//         new Set((galleryData ?? []).map((r) => r.url).filter(Boolean))
+//     );
+//
+//     let matchedImage: { url: string } | null = null;
+//
+//     if (lookupUrl) {
+//         const { data: foundImage } = await supabase
+//             .from("images")
+//             .select("url")
+//             .eq("url", lookupUrl)
+//             .maybeSingle();
+//
+//         if (foundImage?.url) {
+//             matchedImage = foundImage;
+//         }
+//     }
+//
+//     return (
+//         <main style={{ padding: 24 }}>
+//             <h1 className={adelia.className}>Images</h1>
+//
+//             <h2 className={fors.className}>Add Image</h2>
+//             <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+//                 <input
+//                     name="url"
+//                     placeholder="https://example.com/image.jpg"
+//                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+//                     className={fors.className}
+//                 />
+//                 <button
+//                     type="submit"
+//                     style={{ fontSize: "15px", fontWeight: "bold" }}
+//                     className={fors.className}
+//                 >
+//                     Create
+//                 </button>
+//             </form>
+//
+//             <hr style={{ margin: "24px 0" }} />
+//
+//             <h2 className={fors.className}>Update Existing Image</h2>
+//             <form
+//                 action={updateImageByUrl}
+//                 style={{ display: "grid", gap: 8, maxWidth: 900 }}
+//                 className={fors.className}
+//             >
+//                 <input
+//                     name="oldUrl"
+//                     placeholder="Old Image URL"
+//                     style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+//                     className={fors.className}
+//                 />
+//                 <input
+//                     name="newUrl"
+//                     placeholder="New Image URL"
+//                     style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+//                     className={fors.className}
+//                 />
+//                 <button
+//                     type="submit"
+//                     style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }}
+//                     className={fors.className}
+//                 >
+//                     Update
+//                 </button>
+//             </form>
+//
+//             <hr style={{ margin: "24px 0" }} />
+//
+//             <h2 className={fors.className}>Delete Image</h2>
+//             <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+//                 <input
+//                     name="url"
+//                     placeholder="https://example.com/image.jpg"
+//                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+//                     className={fors.className}
+//                 />
+//                 <button
+//                     type="submit"
+//                     style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }}
+//                     className={fors.className}
+//                 >
+//                     Delete
+//                 </button>
+//             </form>
+//
+//             <hr style={{ margin: "24px 0" }} />
+//
+//             <h2 className={fors.className}>Display Image by URL</h2>
+//             <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+//                 <input
+//                     name="lookup"
+//                     defaultValue={lookupUrl}
+//                     placeholder="https://example.com/image.jpg"
+//                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+//                     className={fors.className}
+//                 />
+//                 <button
+//                     type="submit"
+//                     style={{ fontSize: "15px", fontWeight: "bold" }}
+//                     className={fors.className}
+//                 >
+//                     Display
+//                 </button>
+//             </form>
+//
+//             {lookupUrl && (
+//                 <div style={{ marginTop: 20 }}>
+//                     {matchedImage ? (
+//                         <>
+//                             <p className={fors.className} style={{ fontWeight: "bold" }}>
+//                                 Matching image:
+//                             </p>
+//                             <img
+//                                 src={matchedImage.url}
+//                                 alt="Looked up image"
+//                                 style={{
+//                                     maxWidth: "400px",
+//                                     width: "100%",
+//                                     height: "auto",
+//                                     borderRadius: 12,
+//                                     border: "1px solid #ccc",
+//                                 }}
+//                             />
+//                         </>
+//                     ) : (
+//                         <p className={fors.className}>No image found for that URL.</p>
+//                     )}
+//                 </div>
+//             )}
+//
+//             <hr style={{ margin: "24px 0" }} />
+//
+//             <h2 className={fors.className}>Images Table</h2>
+//
+//             <div
+//                 className={fors.className}
+//                 style={{ marginTop: 8, marginBottom: 16, fontSize: 16 }}
+//             >
+//                 Showing page {page} ({rows.length} rows loaded)
+//             </div>
+//
+//             <div
+//                 style={{
+//                     display: "flex",
+//                     gap: 12,
+//                     marginBottom: 24,
+//                     flexWrap: "wrap",
+//                 }}
+//             >
+//                 {page > 1 && (
+//                     <Link
+//                         href={{
+//                             pathname: "/", // change this if your real route is different
+//                             query: lookupUrl
+//                                 ? { page: String(page - 1), lookup: lookupUrl }
+//                                 : { page: String(page - 1) },
+//                         }}
+//                         className={fors.className}
+//                         style={navButtonStyle}
+//                     >
+//                         ← Previous
+//                     </Link>
+//                 )}
+//
+//                 {rows.length === pageSize && (
+//                     <Link
+//                         href={{
+//                             pathname: "/", // change this if your real route is different
+//                             query: lookupUrl
+//                                 ? { page: String(page + 1), lookup: lookupUrl }
+//                                 : { page: String(page + 1) },
+//                         }}
+//                         className={fors.className}
+//                         style={navButtonStyle}
+//                     >
+//                         Next →
+//                     </Link>
+//                 )}
+//             </div>
+//
+//             <ExpandableTable rows={rows} columns={columns} />
+//
+//             {/*<hr style={{ margin: "24px 0" }} />*/}
+//
+//             {/*<ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />*/}
+//         </main>
+//     );
+// }
+//
+// const navButtonStyle: React.CSSProperties = {
+//     textDecoration: "none",
+//     color: "black",
+//     border: "1px solid #ccc",
+//     padding: "8px 14px",
+//     borderRadius: "10px",
+//     backgroundColor: "#f5f5f5",
+// };

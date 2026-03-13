@@ -4,7 +4,7 @@ import Link from "next/link";
 import SignOutButton from "./admin/components/SignOutButton";
 import { adelia, fors, kindergarten } from "./admin/fonts/fonts";
 
-import CardsPage from "./admin/cards/page"
+import CardsPage from "./admin/cards/page";
 import UsersPage from "./admin/users/page";
 import ImagesPage from "./admin/images/page";
 import HumorFlavorsPage from "./admin/flavors/page";
@@ -39,6 +39,16 @@ type Section =
     | "allowed-signup-domains"
     | "whitelist-email-addresses";
 
+type DashboardSearchParams = {
+    section?: string;
+    page?: string;
+    lookup?: string;
+};
+
+type SectionPageProps = {
+    searchParams?: Promise<DashboardSearchParams>;
+};
+
 const navItems: { label: string; value: Section }[] = [
     { label: "All", value: "all" },
     { label: "Users", value: "users" },
@@ -58,7 +68,10 @@ const navItems: { label: string; value: Section }[] = [
     { label: "Whitelist Email Addresses", value: "whitelist-email-addresses" },
 ];
 
-const sectionComponents: Record<Section, React.ComponentType> = {
+const sectionComponents: Record<
+    Section,
+    React.ComponentType<SectionPageProps>
+> = {
     all: CardsPage,
     users: UsersPage,
     images: ImagesPage,
@@ -80,11 +93,11 @@ const sectionComponents: Record<Section, React.ComponentType> = {
 export default async function Home({
                                        searchParams,
                                    }: {
-    searchParams?: Promise<{ section?: string }>;
+    searchParams?: Promise<DashboardSearchParams>;
 }) {
-    const resolvedSearchParams = await searchParams;
+    const resolvedSearchParams = (await searchParams) ?? {};
 
-    const rawSection = resolvedSearchParams?.section;
+    const rawSection = resolvedSearchParams.section;
     const currentSection: Section =
         rawSection && rawSection in sectionComponents
             ? (rawSection as Section)
@@ -178,12 +191,13 @@ export default async function Home({
                     overflowY: "auto",
                 }}
             >
-                <SectionComponent />
+                <SectionComponent
+                    searchParams={Promise.resolve(resolvedSearchParams)}
+                />
             </section>
         </main>
     );
 }
-
 
 
 
