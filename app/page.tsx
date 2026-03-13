@@ -18,13 +18,21 @@ export default async function Home() {
         redirect("/login");
     }
 
-    const [{ count: userCount }, { count: imageCount }, { count: captionCount }] =
+    const [{ count: userCount }, { count: imageCount }, { count: captionCount }, { count: flavorCount },
+        { count: flavorStepsCount }, { count: captionRequestsCount }, { count: LLMPromptChainsCount},
+        { count: LLMModelResponsesCount }, { count: termsCount }] =
         await Promise.all([
             supabase
                 .from("profiles")
                 .select("*", { count: "exact", head: true }),
             supabase.from("images").select("*", { count: "exact", head: true }),
             supabase.from("captions").select("*", { count: "exact", head: true }),
+            supabase.from("humor_flavors").select("*", { count: "exact", head: true }),
+            supabase.from("humor_flavor_steps").select("*", { count: "exact", head: true }),
+            supabase.from("caption_requests").select("*", { count: "exact", head: true }),
+            supabase.from("llm_prompt_chains").select("*", { count: "exact", head: true }),
+            supabase.from("llm_model_responses").select("*", { count: "exact", head: true }),
+            supabase.from("terms").select("*", { count: "exact", head: true }),
         ]);
 
     return (
@@ -56,7 +64,7 @@ export default async function Home() {
 
         .floatingCard {
           position: absolute;
-          width: min(340px, 86vw);
+          width: min(210px, 86vw);
           border-radius: 18px;
           padding: 18px 18px 14px;
           border: 2px solid rgba(0,0,0,0.12);
@@ -124,7 +132,7 @@ export default async function Home() {
                                 textDecoration: "none"
                             }}
                         >
-                            View emails
+                            View profiles
                         </Link>
                     </div>
                 </div>
@@ -133,8 +141,8 @@ export default async function Home() {
                 <div
                     className={`floatingCard anim2 ${kindergarten.className}`}
                     style={{
-                        top: "29%",
-                        right: "9%",
+                        top: "39%",
+                        right: "13%",
                         animation: "float2 7.8s ease-in-out infinite",
                     }}
                 >
@@ -176,6 +184,172 @@ export default async function Home() {
                         </Link>
                     </div>
                 </div>
+
+
+
+                {/* Humor flavors card */}
+                <div
+                    className={`floatingCard anim1 ${kindergarten.className}`}
+                    style={{
+                        top: "60%",
+                        right: "32%",
+                        animation: "float3 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>Humor flavors</div>
+                    <div className="count">{flavorCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/flavors"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View humor flavors
+                        </Link>
+                    </div>
+                </div>
+
+
+
+
+                {/* Humor flavor steps card */}
+                <div
+                    className={`floatingCard anim2 ${kindergarten.className}`}
+                    style={{
+                        top: "20%",
+                        right: "78%",
+                        animation: "float2 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>Humor flavor steps</div>
+                    <div className="count">{flavorStepsCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/flavor_steps"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View humor flavor steps
+                        </Link>
+                    </div>
+                </div>
+
+
+
+
+                {/* Caption requests card */}
+                <div
+                    className={`floatingCard anim2 ${kindergarten.className}`}
+                    style={{
+                        top: "35%",
+                        right: "55%",
+                        animation: "float1 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>Caption requests</div>
+                    <div className="count">{captionRequestsCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/caption_requests"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View caption requests
+                        </Link>
+                    </div>
+                </div>
+
+
+
+
+                {/* LLM prompt chains card */}
+                <div
+                    className={`floatingCard anim2 ${kindergarten.className}`}
+                    style={{
+                        top: "10%",
+                        right: "35%",
+                        animation: "float3 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>LLM Prompt Chains</div>
+                    <div className="count">{LLMPromptChainsCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/llm_prompt_chains"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View LLM prompt chains
+                        </Link>
+                    </div>
+                </div>
+
+
+
+                {/* LLM model responses card */}
+                <div
+                    className={`floatingCard anim2 ${kindergarten.className}`}
+                    style={{
+                        top: "1%",
+                        right: "8%",
+                        animation: "float2 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>LLM Model Responses</div>
+                    <div className="count">{LLMModelResponsesCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/llm_model_responses"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View LLM responses
+                        </Link>
+                    </div>
+                </div>
+
+
+
+
+
+                {/* Terms card */}
+                <div
+                    className={`floatingCard anim2 ${kindergarten.className}`}
+                    style={{
+                        top: "70%",
+                        right: "8%",
+                        animation: "float1 7.8s ease-in-out infinite",
+                    }}
+                >
+                    <div style={{ fontSize: 18, fontWeight: 800 }}>Terms</div>
+                    <div className="count">{termsCount ?? 0}</div>
+                    <div className="cta" style={{ fontSize: 16, fontWeight: 700 }}>
+                        <Link
+                            href="/admin/terms"
+                            style={{
+                                color: "black",
+                                textDecoration: "none"
+                            }}
+                        >
+                            View terms
+                        </Link>
+                    </div>
+                </div>
+
+
+
+
+
             </div>
         </main>
     );
