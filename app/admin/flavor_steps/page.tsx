@@ -50,7 +50,7 @@ export default async function HumorFlavorStepsPage({ searchParams }: PageProps) 
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <div

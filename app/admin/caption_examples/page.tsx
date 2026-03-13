@@ -225,7 +225,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -313,12 +313,16 @@ const inputStyle: React.CSSProperties = {
 };
 
 const buttonStyle: React.CSSProperties = {
-    padding: "10px 14px",
+    padding: "6px 10px",
     border: "1px solid #ccc",
-    borderRadius: 10,
+    borderRadius: 8,
     backgroundColor: "#f5f5f5",
     cursor: "pointer",
+    fontSize: 14,
+    alignSelf: "end",
+    width: "fit-content",
 };
+
 
 const deleteButtonStyle: React.CSSProperties = {
     ...buttonStyle,

@@ -150,7 +150,7 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <ExpandableTable rows={rows} columns={columns} />
@@ -189,13 +189,19 @@ const inputStyle: CSSProperties = {
     borderRadius: 8,
 };
 
-const buttonStyle: CSSProperties = {
-    padding: "10px 14px",
+const buttonStyle: React.CSSProperties = {
+    padding: "6px 10px",
     border: "1px solid #ccc",
-    borderRadius: 10,
+    borderRadius: 8,
     backgroundColor: "#f5f5f5",
     cursor: "pointer",
+    fontSize: 14,
+    alignSelf: "end",
+    width: "fit-content",
 };
+
+
+
 
 const navButtonStyle: CSSProperties = {
     textDecoration: "none",
