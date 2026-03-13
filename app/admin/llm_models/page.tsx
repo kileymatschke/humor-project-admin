@@ -124,25 +124,15 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>LLM Models</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
-            <div
-                className={kindergarten.className}
-                style={{
-                    marginTop: 16,
-                    marginBottom: 16,
-                    fontSize: 16,
-                }}
-            >
-                Showing page {page} ({rows.length} rows loaded)
-            </div>
 
             <div
                 style={{
@@ -155,7 +145,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
                 {page > 1 && (
                     <Link
                         href={`?page=${page - 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         ← Previous
@@ -165,7 +155,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
                 {rows.length === pageSize && (
                     <Link
                         href={`?page=${page + 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         Next →
@@ -174,7 +164,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
             </div>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Create LLM Model
                 </h2>
 
@@ -197,7 +187,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
             </section>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Update LLM Model
                 </h2>
 
@@ -232,7 +222,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
             </section>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Delete LLM Model
                 </h2>
 
@@ -252,6 +242,19 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
                     </button>
                 </form>
             </section>
+
+
+            <div
+                className={fors.className}
+                style={{
+                    marginTop: 16,
+                    marginBottom: 16,
+                    fontSize: 16,
+                }}
+            >
+                Showing page {page} ({rows.length} rows loaded)
+            </div>
+
 
             <ExpandableTable rows={rows} columns={columns} />
         </main>

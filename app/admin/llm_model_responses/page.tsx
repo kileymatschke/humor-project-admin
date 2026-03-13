@@ -1,5 +1,5 @@
 import { createClient } from "../../../lib/supabase/server";
-import { adelia, kindergarten } from "../fonts/fonts";
+import { adelia, fors, kindergarten } from "../fonts/fonts";
 import Link from "next/link";
 import ExpandableTable from "../components/ExpandableTable";
 
@@ -41,17 +41,17 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>LLM Model Responses</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
             <div
-                className={kindergarten.className}
+                className={fors.className}
                 style={{
                     marginTop: 16,
                     marginBottom: 16,
@@ -72,7 +72,7 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
                 {page > 1 && (
                     <Link
                         href={`?page=${page - 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={{
                             textDecoration: "none",
                             color: "black",
@@ -89,7 +89,7 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
                 {rows.length === pageSize && (
                     <Link
                         href={`?page=${page + 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={{
                             textDecoration: "none",
                             color: "black",

@@ -41,32 +41,32 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>LLM Prompt Chains</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
+
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{*/}
+            {/*        fontSize: "20px",*/}
+            {/*        fontWeight: "bold",*/}
+            {/*        marginTop: 16,*/}
+            {/*        marginBottom: 8,*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    Total Rows: {totalRows}*/}
+            {/*</div>*/}
 
             <div
-                className={kindergarten.className}
-                style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginTop: 16,
-                    marginBottom: 8,
-                }}
-            >
-                Total Rows: {totalRows}
-            </div>
-
-            <div
-                className={kindergarten.className}
+                className={fors.className}
                 style={{ marginBottom: 16, fontSize: 16 }}
             >
-                Showing rows {totalRows === 0 ? 0 : from + 1}–{Math.min(to + 1, totalRows)} of {totalRows} | Page {page} of {totalPages}
+                Showing page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -80,7 +80,7 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
                 {page > 1 && (
                     <Link
                         href={`?page=${page - 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={{
                             textDecoration: "none",
                             color: "black",
@@ -97,7 +97,7 @@ export default async function LlmPromptChainsPage({ searchParams }: PageProps) {
                 {page < totalPages && (
                     <Link
                         href={`?page=${page + 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={{
                             textDecoration: "none",
                             color: "black",

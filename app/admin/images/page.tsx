@@ -140,16 +140,16 @@ export default async function AdminImagesPage({
         <main style={{ padding: 24 }}>
             <h1 className={adelia.className}>Images</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
-            <h2 className={kindergarten.className}>Add Image</h2>
+            <h2 className={fors.className}>Add Image</h2>
             <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                     name="url"
@@ -160,7 +160,7 @@ export default async function AdminImagesPage({
                 <button
                     type="submit"
                     style={{ fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
+                    className={fors.className}
                 >
                     Create
                 </button>
@@ -168,7 +168,7 @@ export default async function AdminImagesPage({
 
             <hr style={{ margin: "24px 0" }} />
 
-            <h2 className={kindergarten.className}>Update Existing Image</h2>
+            <h2 className={fors.className}>Update Existing Image</h2>
             <form
                 action={updateImageByUrl}
                 style={{ display: "grid", gap: 8, maxWidth: 900 }}
@@ -189,7 +189,7 @@ export default async function AdminImagesPage({
                 <button
                     type="submit"
                     style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
+                    className={fors.className}
                 >
                     Update
                 </button>
@@ -197,7 +197,7 @@ export default async function AdminImagesPage({
 
             <hr style={{ margin: "24px 0" }} />
 
-            <h2 className={kindergarten.className}>Delete Image</h2>
+            <h2 className={fors.className}>Delete Image</h2>
             <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                     name="url"
@@ -208,7 +208,7 @@ export default async function AdminImagesPage({
                 <button
                     type="submit"
                     style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
+                    className={fors.className}
                 >
                     Delete
                 </button>
@@ -216,19 +216,19 @@ export default async function AdminImagesPage({
 
             <hr style={{ margin: "24px 0" }} />
 
-            <h2 className={kindergarten.className}>Display Image by URL</h2>
+            <h2 className={fors.className}>Display Image by URL</h2>
             <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                     name="lookup"
                     defaultValue={lookupUrl}
-                    placeholder="Paste image URL here"
+                    placeholder="https://example.com/image.jpg"
                     style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
                     className={fors.className}
                 />
                 <button
                     type="submit"
                     style={{ fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
+                    className={fors.className}
                 >
                     Display
                 </button>
@@ -261,10 +261,10 @@ export default async function AdminImagesPage({
 
             <hr style={{ margin: "24px 0" }} />
 
-            <h2 className={kindergarten.className}>Images Table</h2>
+            <h2 className={fors.className}>Images Table</h2>
 
             <div
-                className={kindergarten.className}
+                className={fors.className}
                 style={{ marginTop: 8, marginBottom: 16, fontSize: 16 }}
             >
                 Showing page {page} ({rows.length} rows loaded)
@@ -281,7 +281,7 @@ export default async function AdminImagesPage({
                 {page > 1 && (
                     <Link
                         href={prevHref}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         ← Previous
@@ -291,7 +291,7 @@ export default async function AdminImagesPage({
                 {rows.length === pageSize && (
                     <Link
                         href={nextHref}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         Next →

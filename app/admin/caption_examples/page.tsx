@@ -135,18 +135,18 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Caption Examples</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, marginBottom: 18, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, marginBottom: 18, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Create Caption Example
                 </h2>
 
@@ -169,7 +169,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
             </section>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Update Caption Example
                 </h2>
 
@@ -205,7 +205,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
             </section>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Delete Caption Example
                 </h2>
 
@@ -228,7 +228,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
 
 
             <div
-                className={kindergarten.className}
+                className={fors.className}
                 style={{
                     marginTop: 16,
                     marginBottom: 16,
@@ -249,7 +249,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                 {page > 1 && (
                     <Link
                         href={`?page=${page - 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         ← Previous
@@ -259,7 +259,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                 {rows.length === pageSize && (
                     <Link
                         href={`?page=${page + 1}`}
-                        className={kindergarten.className}
+                        className={fors.className}
                         style={navButtonStyle}
                     >
                         Next →

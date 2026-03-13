@@ -76,25 +76,25 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Humor Flavor Mix</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
-            <div
-                className={kindergarten.className}
-                style={{
-                    marginTop: 16,
-                    marginBottom: 16,
-                    fontSize: 16,
-                }}
-            >
-                Showing page {page} ({rows.length} rows loaded)
-            </div>
+            {/*<div*/}
+            {/*    className={fors.className}*/}
+            {/*    style={{*/}
+            {/*        marginTop: 16,*/}
+            {/*        marginBottom: 16,*/}
+            {/*        fontSize: 16,*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    Showing page {page} ({rows.length} rows loaded)*/}
+            {/*</div>*/}
 
             <div
                 style={{
@@ -160,6 +160,19 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
                     </button>
                 </form>
             </section>
+
+
+            <div
+                className={fors.className}
+                style={{
+                    marginTop: 16,
+                    marginBottom: 16,
+                    fontSize: 16,
+                }}
+            >
+                Showing page {page} ({rows.length} rows loaded)
+            </div>
+
 
             <ExpandableTable rows={rows} columns={columns} />
         </main>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import SignOutButton from "./admin/components/SignOutButton";
 import { adelia, fors, kindergarten } from "./admin/fonts/fonts";
 
+import CardsPage from "./admin/cards/page"
 import UsersPage from "./admin/users/page";
 import ImagesPage from "./admin/images/page";
 import HumorFlavorsPage from "./admin/flavors/page";
@@ -21,6 +22,7 @@ import LlmPromptChainsPage from "./admin/llm_prompt_chains/page";
 import LlmModelResponsesPage from "./admin/llm_model_responses/page";
 
 type Section =
+    | "all"
     | "users"
     | "images"
     | "humor-flavor-steps"
@@ -38,24 +40,26 @@ type Section =
     | "whitelist-email-addresses";
 
 const navItems: { label: string; value: Section }[] = [
+    { label: "All", value: "all" },
     { label: "Users", value: "users" },
     { label: "Images", value: "images" },
+    { label: "Humor Flavors", value: "humor-flavors" },
     { label: "Humor Flavor Steps", value: "humor-flavor-steps" },
     { label: "Humor Flavor Mix", value: "humor-flavor-mix" },
-    { label: "Humor Flavors", value: "humor-flavors" },
-    { label: "Terms", value: "terms" },
     { label: "Captions", value: "captions" },
-    { label: "Caption Requests", value: "caption-requests" },
     { label: "Caption Examples", value: "caption-examples" },
-    { label: "LLM Providers", value: "llm-providers" },
-    { label: "LLM Prompt Chains", value: "llm-prompt-chains" },
+    { label: "Caption Requests", value: "caption-requests" },
     { label: "LLM Models", value: "llm-models" },
     { label: "LLM Model Responses", value: "llm-model-responses" },
+    { label: "LLM Prompt Chains", value: "llm-prompt-chains" },
+    { label: "LLM Providers", value: "llm-providers" },
+    { label: "Terms", value: "terms" },
     { label: "Allowed Signup Domains", value: "allowed-signup-domains" },
-    { label: "Whitelist E-mail Addresses", value: "whitelist-email-addresses" },
+    { label: "Whitelist Email Addresses", value: "whitelist-email-addresses" },
 ];
 
 const sectionComponents: Record<Section, React.ComponentType> = {
+    all: CardsPage,
     users: UsersPage,
     images: ImagesPage,
     "humor-flavor-steps": HumorFlavorStepsPage,
@@ -143,7 +147,7 @@ export default async function Home({
                     overflowY: "auto",
                 }}
             >
-                <h1 className={adelia.className} style={{ marginTop: 24, marginBottom: 12 }}>
+                <h1 className={adelia.className} style={{ marginTop: 42, marginBottom: 12 }}>
                     Dashboard
                 </h1>
 

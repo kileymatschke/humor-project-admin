@@ -48,14 +48,14 @@ export default async function UsersPage() {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Users</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, marginBottom: 18, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, marginBottom: 18, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
 
             {/*<div*/}
             {/*    className={kindergarten.className}*/}

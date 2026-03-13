@@ -27,26 +27,27 @@ export default async function HumorFlavorsPage() {
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Humor Flavors</h1>
 
-            <div
-                className={kindergarten.className}
-                style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}
-            >
-                <Link href="/" style={{ textDecoration: "none", color: "black" }}>
-                    ← Back to dashboard
-                </Link>
-            </div>
 
-            <div
-                className={fors.className}
-                style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginTop: 16,
-                    marginBottom: 16,
-                }}
-            >
-                Total Rows: {rows.length}
-            </div>
+            {/*<div*/}
+            {/*    className={kindergarten.className}*/}
+            {/*    style={{ marginTop: 6, fontSize: 16, fontWeight: 700 }}*/}
+            {/*>*/}
+            {/*    <Link href="/" style={{ textDecoration: "none", color: "black" }}>*/}
+            {/*        ← Back to dashboard*/}
+            {/*    </Link>*/}
+            {/*</div>*/}
+
+            {/*<div*/}
+            {/*    className={fors.className}*/}
+            {/*    style={{*/}
+            {/*        fontSize: "20px",*/}
+            {/*        fontWeight: "bold",*/}
+            {/*        marginTop: 16,*/}
+            {/*        marginBottom: 16,*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    Total Rows: {rows.length}*/}
+            {/*</div>*/}
 
             <div style={{ overflowX: "auto" }}>
                 <table
