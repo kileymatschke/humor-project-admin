@@ -1,11 +1,9 @@
 import ScrollingImageWallClient from "../components/ScrollingImageWallClient";
+import ExpandableTable from "../components/ExpandableTable";
 
 import { createClient } from "../../../lib/supabase/server";
-import { adelia } from "../fonts/fonts";
-import { kindergarten } from "../fonts/fonts";
-import { fors } from "../fonts/fonts";
+import { adelia, kindergarten, fors } from "../fonts/fonts";
 import Link from "next/link";
-
 
 async function createImage(formData: FormData) {
     "use server";
@@ -15,10 +13,10 @@ async function createImage(formData: FormData) {
     const url = String(formData.get("url") ?? "").trim();
     if (!url) return;
 
-    const id = crypto.randomUUID(); // generates UUID like 653a7479-845a-4427-8be1-869793848ee2
+    const id = crypto.randomUUID();
 
-    const created_datetime_utc = new Date().toISOString(); // UTC timestamp
-    const modified_datetime_utc = new Date().toISOString(); // UTC timestamp
+    const created_datetime_utc = new Date().toISOString();
+    const modified_datetime_utc = new Date().toISOString();
 
     const { error } = await supabase.from("images").insert({
         id,
@@ -34,17 +32,25 @@ async function createImage(formData: FormData) {
 
 async function updateImageByUrl(formData: FormData) {
     "use server";
+
     const supabase = await createClient();
 
     const oldUrl = String(formData.get("oldUrl") ?? "").trim();
     const newUrl = String(formData.get("newUrl") ?? "").trim();
     if (!oldUrl || !newUrl) return;
 
-    await supabase.from("images").update({ url: newUrl }).eq("url", oldUrl);
+    await supabase
+        .from("images")
+        .update({
+            url: newUrl,
+            modified_datetime_utc: new Date().toISOString(),
+        })
+        .eq("url", oldUrl);
 }
 
 async function deleteImageByUrl(formData: FormData) {
     "use server";
+
     const supabase = await createClient();
 
     const url = String(formData.get("url") ?? "").trim();
@@ -56,28 +62,57 @@ async function deleteImageByUrl(formData: FormData) {
 export default async function AdminImagesPage({
                                                   searchParams,
                                               }: {
-    searchParams: Promise<{ lookup?: string }>;
+    searchParams?: Promise<{ lookup?: string; page?: string }>;
 }) {
     const supabase = await createClient();
-    const params = await searchParams;
-    const lookupUrl = String(params.lookup ?? "").trim();
 
-    const { data, error } = await supabase
+    const params = (await searchParams) ?? {};
+
+    const lookupUrl = String(params.lookup ?? "").trim();
+    const page = Math.max(Number(params.page ?? "1"), 1);
+
+    const pageSize = 100;
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    // Table data: all columns, paginated
+    const { data: tableData, error: tableError } = await supabase
+        .from("images")
+        .select("*")
+        .order("created_datetime_utc", { ascending: false })
+        .range(from, to);
+
+    if (tableError) {
+        return (
+            <main style={{ padding: 24 }}>
+                <h1>Images</h1>
+                <pre>{JSON.stringify(tableError, null, 2)}</pre>
+            </main>
+        );
+    }
+
+    const rows = tableData ?? [];
+    const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
+
+    // Gallery data: keep separate so the wall still has plenty of images
+    const { data: galleryData, error: galleryError } = await supabase
         .from("images")
         .select("url")
         .not("url", "is", null)
         .limit(500);
 
-    if (error) {
+    if (galleryError) {
         return (
             <main style={{ padding: 24 }}>
                 <h1>Images</h1>
-                <pre>{JSON.stringify(error, null, 2)}</pre>
+                <pre>{JSON.stringify(galleryError, null, 2)}</pre>
             </main>
         );
     }
 
-    const uniqueUrls = Array.from(new Set((data ?? []).map((r) => r.url).filter(Boolean)));
+    const uniqueUrls = Array.from(
+        new Set((galleryData ?? []).map((r) => r.url).filter(Boolean))
+    );
 
     let matchedImage: { url: string } | null = null;
 
@@ -93,6 +128,14 @@ export default async function AdminImagesPage({
         }
     }
 
+    const prevHref = lookupUrl
+        ? `?page=${page - 1}&lookup=${encodeURIComponent(lookupUrl)}`
+        : `?page=${page - 1}`;
+
+    const nextHref = lookupUrl
+        ? `?page=${page + 1}&lookup=${encodeURIComponent(lookupUrl)}`
+        : `?page=${page + 1}`;
+
     return (
         <main style={{ padding: 24 }}>
             <h1 className={adelia.className}>Images</h1>
@@ -106,8 +149,74 @@ export default async function AdminImagesPage({
                 </Link>
             </div>
 
-            {/* LOOKUP */}
-            <h2 className={kindergarten.className}>Look Up Image by URL</h2>
+            <h2 className={kindergarten.className}>Add Image</h2>
+            <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                    name="url"
+                    placeholder="https://example.com/image.jpg"
+                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button
+                    type="submit"
+                    style={{ fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
+                    Create
+                </button>
+            </form>
+
+            <hr style={{ margin: "24px 0" }} />
+
+            <h2 className={kindergarten.className}>Update Existing Image</h2>
+            <form
+                action={updateImageByUrl}
+                style={{ display: "grid", gap: 8, maxWidth: 900 }}
+                className={fors.className}
+            >
+                <input
+                    name="oldUrl"
+                    placeholder="Old Image URL"
+                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <input
+                    name="newUrl"
+                    placeholder="New Image URL"
+                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button
+                    type="submit"
+                    style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
+                    Update
+                </button>
+            </form>
+
+            <hr style={{ margin: "24px 0" }} />
+
+            <h2 className={kindergarten.className}>Delete Image</h2>
+            <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                    name="url"
+                    placeholder="https://example.com/image.jpg"
+                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
+                    className={fors.className}
+                />
+                <button
+                    type="submit"
+                    style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }}
+                    className={kindergarten.className}
+                >
+                    Delete
+                </button>
+            </form>
+
+            <hr style={{ margin: "24px 0" }} />
+
+            <h2 className={kindergarten.className}>Display Image by URL</h2>
             <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                     name="lookup"
@@ -121,7 +230,7 @@ export default async function AdminImagesPage({
                     style={{ fontSize: "15px", fontWeight: "bold" }}
                     className={kindergarten.className}
                 >
-                    Look Up
+                    Display
                 </button>
             </form>
 
@@ -152,75 +261,58 @@ export default async function AdminImagesPage({
 
             <hr style={{ margin: "24px 0" }} />
 
-            {/* CREATE */}
-            <h2 className={kindergarten.className}>Add Image</h2>
-            <form action={createImage} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input
-                    name="url"
-                    placeholder="https://example.com/image.jpg"
-                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
-                    className={fors.className}
-                />
-                <button
-                    type="submit"
-                    style={{ fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
-                >
-                    Create
-                </button>
-            </form>
+            <h2 className={kindergarten.className}>Images Table</h2>
+
+            <div
+                className={kindergarten.className}
+                style={{ marginTop: 8, marginBottom: 16, fontSize: 16 }}
+            >
+                Showing page {page} ({rows.length} rows loaded)
+            </div>
+
+            <div
+                style={{
+                    display: "flex",
+                    gap: 12,
+                    marginBottom: 24,
+                    flexWrap: "wrap",
+                }}
+            >
+                {page > 1 && (
+                    <Link
+                        href={prevHref}
+                        className={kindergarten.className}
+                        style={navButtonStyle}
+                    >
+                        ← Previous
+                    </Link>
+                )}
+
+                {rows.length === pageSize && (
+                    <Link
+                        href={nextHref}
+                        className={kindergarten.className}
+                        style={navButtonStyle}
+                    >
+                        Next →
+                    </Link>
+                )}
+            </div>
+
+            <ExpandableTable rows={rows} columns={columns} />
 
             <hr style={{ margin: "24px 0" }} />
 
-            {/* UPDATE */}
-            <h2 className={kindergarten.className}>Update Existing Image</h2>
-            <form action={updateImageByUrl} style={{ display: "grid", gap: 8, maxWidth: 900 }} className={fors.className}>
-                <input
-                    name="oldUrl"
-                    placeholder="Old Image URL"
-                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
-                    className={fors.className}
-                />
-                <input
-                    name="newUrl"
-                    placeholder="New Image URL"
-                    style={{ padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
-                    className={fors.className}
-                />
-                <button
-                    type="submit"
-                    style={{ width: "fit-content", fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
-                >
-                    Update
-                </button>
-            </form>
-
-            <hr style={{ margin: "24px 0" }} />
-
-            {/* DELETE */}
-            <h2 className={kindergarten.className}>Delete Image</h2>
-            <form action={deleteImageByUrl} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input
-                    name="url"
-                    placeholder="https://example.com/image.jpg"
-                    style={{ flex: 1, padding: 8, border: "1px solid #ccc", borderRadius: 6 }}
-                    className={fors.className}
-                />
-                <button
-                    type="submit"
-                    style={{ border: "1px solid #c00", color: "#c00", fontSize: "15px", fontWeight: "bold" }}
-                    className={kindergarten.className}
-                >
-                    Delete
-                </button>
-            </form>
-
-            <hr style={{ margin: "24px 0" }} />
-
-
-
-            {/* READ */}
-            <ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />        </main>
+            <ScrollingImageWallClient urls={uniqueUrls} rows={6} height={140} />
+        </main>
     );
 }
+
+const navButtonStyle: React.CSSProperties = {
+    textDecoration: "none",
+    color: "black",
+    border: "1px solid #ccc",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#f5f5f5",
+};
