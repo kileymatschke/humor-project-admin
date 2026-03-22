@@ -10,28 +10,51 @@ type PageProps = {
     }>;
 };
 
-function nowUtcTimestamp() {
-    return new Date().toISOString();
+async function getCurrentProfileId() {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    if (!user) {
+        throw new Error("You must be signed in.");
+    }
+
+    // Assumes profiles.id matches auth.users.id
+    return user.id;
 }
 
 async function createTerm(formData: FormData) {
     "use server";
 
     const supabase = await createClient();
+    const profileId = await getCurrentProfileId();
 
     const payload: Record<string, string | null> = Object.fromEntries(
         Array.from(formData.entries())
-            .filter(([key]) => !key.startsWith("$"))
+            .filter(
+                ([key]) =>
+                    !key.startsWith("$") &&
+                    key !== "id" &&
+                    key !== "created_by_user_id" &&
+                    key !== "modified_by_user_id" &&
+                    key !== "created_datetime_utc" &&
+                    key !== "modified_datetime_utc"
+            )
             .map(([key, value]) => [key, value === "" ? null : String(value)])
     );
-
-    const timestamp = nowUtcTimestamp();
 
     const { error } = await supabase.from("terms").insert([
         {
             ...payload,
-            created_datetime_utc: timestamp,
-            modified_datetime_utc: timestamp,
+            created_by_user_id: profileId,
+            modified_by_user_id: profileId,
         },
     ]);
 
@@ -46,6 +69,7 @@ async function updateTerm(formData: FormData) {
     "use server";
 
     const supabase = await createClient();
+    const profileId = await getCurrentProfileId();
 
     const id = formData.get("id");
     if (!id) {
@@ -53,18 +77,26 @@ async function updateTerm(formData: FormData) {
     }
 
     const filteredEntries = Array.from(formData.entries()).filter(
-        ([key, value]) => !key.startsWith("$") && key !== "id" && value !== ""
+        ([key, value]) =>
+            !key.startsWith("$") &&
+            key !== "id" &&
+            key !== "created_by_user_id" &&
+            key !== "modified_by_user_id" &&
+            key !== "created_datetime_utc" &&
+            key !== "modified_datetime_utc" &&
+            value !== ""
     );
 
     const payload: Record<string, string | null> = Object.fromEntries(
         filteredEntries.map(([key, value]) => [key, String(value)])
     );
 
-    payload.modified_datetime_utc = nowUtcTimestamp();
-
     const { error } = await supabase
         .from("terms")
-        .update(payload)
+        .update({
+            ...payload,
+            modified_by_user_id: profileId,
+        })
         .eq("id", id);
 
     if (error) {
@@ -105,8 +137,8 @@ export default async function TermsPage({ searchParams }: PageProps) {
 
     const { data, error } = await supabase
         .from("terms")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
@@ -124,6 +156,8 @@ export default async function TermsPage({ searchParams }: PageProps) {
     const editableColumns = columns.filter(
         (col) =>
             col !== "id" &&
+            col !== "created_by_user_id" &&
+            col !== "modified_by_user_id" &&
             col !== "created_datetime_utc" &&
             col !== "modified_datetime_utc"
     );
@@ -140,7 +174,6 @@ export default async function TermsPage({ searchParams }: PageProps) {
             {/*        ← Back to dashboard*/}
             {/*    </Link>*/}
             {/*</div>*/}
-
 
             <div
                 style={{
@@ -203,8 +236,8 @@ export default async function TermsPage({ searchParams }: PageProps) {
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the <strong>id</strong> and only the fields you want to
-                    change.
+                    Fill in the existing <strong>id</strong> and only the fields you want to
+                    update.
                 </div>
 
                 <form action={updateTerm} style={formGridStyle}>
@@ -252,7 +285,6 @@ export default async function TermsPage({ searchParams }: PageProps) {
                 </form>
             </section>
 
-
             <div
                 className={fors.className}
                 style={{
@@ -263,7 +295,6 @@ export default async function TermsPage({ searchParams }: PageProps) {
             >
                 Showing page {page} ({rows.length} rows loaded)
             </div>
-
 
             <ExpandableTable rows={rows} columns={columns} />
         </main>
@@ -318,7 +349,6 @@ const buttonStyle: React.CSSProperties = {
     alignSelf: "end",
     width: "fit-content",
 };
-
 
 const deleteButtonStyle: React.CSSProperties = {
     ...buttonStyle,

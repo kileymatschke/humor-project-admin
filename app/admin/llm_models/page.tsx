@@ -10,14 +10,39 @@ type PageProps = {
     }>;
 };
 
-function nowUtcTimestamp() {
-    return new Date().toISOString();
+async function getCurrentProfileId() {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        throw new Error("You must be signed in to modify data.");
+    }
+
+    // Assumes profiles.id matches the authenticated user's id.
+    // If your profiles table instead links auth users through another column
+    // like auth_user_id or user_id, change this query accordingly.
+    const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+    if (profileError || !profile) {
+        throw new Error("Could not find matching profile for current user.");
+    }
+
+    return profile.id;
 }
 
 async function createLlmModel(formData: FormData) {
     "use server";
 
     const supabase = await createClient();
+    const profileId = await getCurrentProfileId();
 
     const payload: Record<string, string | null> = Object.fromEntries(
         Array.from(formData.entries())
@@ -28,7 +53,8 @@ async function createLlmModel(formData: FormData) {
     const { error } = await supabase.from("llm_models").insert([
         {
             ...payload,
-            created_datetime_utc: nowUtcTimestamp(),
+            created_by_user_id: profileId,
+            modified_by_user_id: profileId,
         },
     ]);
 
@@ -43,6 +69,7 @@ async function updateLlmModel(formData: FormData) {
     "use server";
 
     const supabase = await createClient();
+    const profileId = await getCurrentProfileId();
 
     const id = formData.get("id");
     if (!id) {
@@ -50,7 +77,14 @@ async function updateLlmModel(formData: FormData) {
     }
 
     const filteredEntries = Array.from(formData.entries()).filter(
-        ([key, value]) => !key.startsWith("$") && key !== "id" && value !== ""
+        ([key, value]) =>
+            !key.startsWith("$") &&
+            key !== "id" &&
+            key !== "created_by_user_id" &&
+            key !== "modified_by_user_id" &&
+            key !== "created_datetime_utc" &&
+            key !== "modified_datetime_utc" &&
+            value !== ""
     );
 
     const payload: Record<string, string | null> = Object.fromEntries(
@@ -59,7 +93,10 @@ async function updateLlmModel(formData: FormData) {
 
     const { error } = await supabase
         .from("llm_models")
-        .update(payload)
+        .update({
+            ...payload,
+            modified_by_user_id: profileId,
+        })
         .eq("id", id);
 
     if (error) {
@@ -100,8 +137,8 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
 
     const { data, error } = await supabase
         .from("llm_models")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
@@ -117,7 +154,12 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
     const editableColumns = columns.filter(
-        (col) => col !== "id" && col !== "created_datetime_utc"
+        (col) =>
+            col !== "id" &&
+            col !== "created_by_user_id" &&
+            col !== "modified_by_user_id" &&
+            col !== "created_datetime_utc" &&
+            col !== "modified_datetime_utc"
     );
 
     return (
@@ -132,7 +174,6 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
             {/*        ← Back to dashboard*/}
             {/*    </Link>*/}
             {/*</div>*/}
-
 
             <div
                 style={{
@@ -195,7 +236,7 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the <strong>id</strong> and only the fields you want to change.
+                    Fill in the existing <strong>id</strong> and only the fields you want to update.
                 </div>
 
                 <form action={updateLlmModel} style={formGridStyle}>
@@ -243,7 +284,6 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
                 </form>
             </section>
 
-
             <div
                 className={fors.className}
                 style={{
@@ -254,7 +294,6 @@ export default async function LlmModelsPage({ searchParams }: PageProps) {
             >
                 Showing page {page} ({rows.length} rows loaded)
             </div>
-
 
             <ExpandableTable rows={rows} columns={columns} />
         </main>
@@ -309,7 +348,6 @@ const buttonStyle: React.CSSProperties = {
     alignSelf: "end",
     width: "fit-content",
 };
-
 
 const deleteButtonStyle: React.CSSProperties = {
     ...buttonStyle,

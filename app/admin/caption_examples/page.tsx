@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
 import { adelia, fors } from "../fonts/fonts";
 import ExpandableTable from "../components/ExpandableTable";
+import type { CSSProperties } from "react";
 
 type PageProps = {
     searchParams?: Promise<{
@@ -11,28 +12,38 @@ type PageProps = {
     }>;
 };
 
-function nowUtcTimestamp() {
-    return new Date().toISOString();
-}
-
 async function createCaptionExample(formData: FormData) {
     "use server";
 
     const supabase = await createClient();
 
-    const payload: Record<string, string | null> = Object.fromEntries(
-        Array.from(formData.entries())
-            .filter(([key]) => !key.startsWith("$"))
-            .map(([key, value]) => [key, value === "" ? null : String(value)])
+    const {
+        data: { user },
+        error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+        throw new Error("User must be logged in.");
+    }
+
+    const filteredEntries = Array.from(formData.entries()).filter(
+        ([key]) =>
+            !key.startsWith("$") &&
+            key !== "created_by_user_id" &&
+            key !== "modified_by_user_id" &&
+            key !== "created_datetime_utc" &&
+            key !== "modified_datetime_utc"
     );
 
-    const timestamp = nowUtcTimestamp();
+    const payload: Record<string, string | null> = Object.fromEntries(
+        filteredEntries.map(([key, value]) => [key, value === "" ? null : String(value)])
+    );
 
     const { error } = await supabase.from("caption_examples").insert([
         {
             ...payload,
-            created_datetime_utc: timestamp,
-            modified_datetime_utc: timestamp,
+            created_by_user_id: user.id,
+            modified_by_user_id: user.id,
         },
     ]);
 
@@ -48,20 +59,36 @@ async function updateCaptionExample(formData: FormData) {
 
     const supabase = await createClient();
 
+    const {
+        data: { user },
+        error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+        throw new Error("User must be logged in.");
+    }
+
     const id = formData.get("id");
     if (!id) {
         throw new Error("Missing id");
     }
 
     const filteredEntries = Array.from(formData.entries()).filter(
-        ([key, value]) => !key.startsWith("$") && key !== "id" && value !== ""
+        ([key, value]) =>
+            !key.startsWith("$") &&
+            key !== "id" &&
+            key !== "created_by_user_id" &&
+            key !== "modified_by_user_id" &&
+            key !== "created_datetime_utc" &&
+            key !== "modified_datetime_utc" &&
+            value !== ""
     );
 
     const payload: Record<string, string | null> = Object.fromEntries(
         filteredEntries.map(([key, value]) => [key, String(value)])
     );
 
-    payload.modified_datetime_utc = nowUtcTimestamp();
+    payload.modified_by_user_id = user.id;
 
     const { error } = await supabase
         .from("caption_examples")
@@ -107,10 +134,10 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
         .from("caption_examples")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
@@ -128,9 +155,14 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
     const editableColumns = columns.filter(
         (col) =>
             col !== "id" &&
+            col !== "created_by_user_id" &&
+            col !== "modified_by_user_id" &&
             col !== "created_datetime_utc" &&
             col !== "modified_datetime_utc"
     );
+
+    const totalRows = count ?? 0;
+    const hasNextPage = to + 1 < totalRows;
 
     return (
         <main style={{ padding: 24, minHeight: "100vh" }}>
@@ -168,8 +200,8 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the <strong>id</strong> and only the fields you want to
-                    change.
+                    Fill in the existing <strong>id</strong> and only the fields you want to
+                    update.
                 </div>
 
                 <form action={updateCaptionExample} style={formGridStyle}>
@@ -225,7 +257,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                     fontSize: 16,
                 }}
             >
-                Page {page} ({rows.length} rows loaded)
+                Showing page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -252,7 +284,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                     </Link>
                 )}
 
-                {rows.length === pageSize && (
+                {hasNextPage && (
                     <Link
                         href={{
                             pathname: "/",
@@ -274,7 +306,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
     );
 }
 
-const sectionStyle: React.CSSProperties = {
+const sectionStyle: CSSProperties = {
     marginBottom: 28,
     padding: 16,
     border: "1px solid #ddd",
@@ -282,37 +314,30 @@ const sectionStyle: React.CSSProperties = {
     backgroundColor: "#fff",
 };
 
-const sectionTitleStyle: React.CSSProperties = {
+const sectionTitleStyle: CSSProperties = {
     marginTop: 0,
     marginBottom: 14,
 };
 
-const formGridStyle: React.CSSProperties = {
+const formGridStyle: CSSProperties = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: 12,
 };
 
-const inlineFormStyle: React.CSSProperties = {
-    display: "flex",
-    gap: 12,
-    flexWrap: "wrap",
-    alignItems: "center",
-};
-
-const labelStyle: React.CSSProperties = {
+const labelStyle: CSSProperties = {
     display: "flex",
     flexDirection: "column",
     gap: 6,
 };
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
     padding: "10px 12px",
     border: "1px solid #ccc",
     borderRadius: 8,
 };
 
-const buttonStyle: React.CSSProperties = {
+const buttonStyle: CSSProperties = {
     padding: "6px 10px",
     border: "1px solid #ccc",
     borderRadius: 8,
@@ -323,13 +348,24 @@ const buttonStyle: React.CSSProperties = {
     width: "fit-content",
 };
 
-
-const deleteButtonStyle: React.CSSProperties = {
-    ...buttonStyle,
-    backgroundColor: "#ffe5e5",
+const deleteButtonStyle: CSSProperties = {
+    padding: "10px 14px",
+    border: "1px solid #c00",
+    borderRadius: 8,
+    backgroundColor: "#fff5f5",
+    color: "#c00",
+    cursor: "pointer",
+    fontSize: 14,
 };
 
-const navButtonStyle: React.CSSProperties = {
+const inlineFormStyle: CSSProperties = {
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+    flexWrap: "wrap",
+};
+
+const navButtonStyle: CSSProperties = {
     textDecoration: "none",
     color: "black",
     border: "1px solid #ccc",

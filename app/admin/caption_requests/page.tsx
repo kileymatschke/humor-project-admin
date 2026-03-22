@@ -1,6 +1,7 @@
 import { createClient } from "../../../lib/supabase/server";
 import { adelia, fors } from "../fonts/fonts";
 import Link from "next/link";
+import ExpandableTable from "../components/ExpandableTable";
 
 type PageProps = {
     searchParams?: Promise<{
@@ -22,6 +23,7 @@ export default async function CaptionRequestsPage({ searchParams }: PageProps) {
     const { data, error, count } = await supabase
         .from("caption_requests")
         .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
@@ -90,69 +92,7 @@ export default async function CaptionRequestsPage({ searchParams }: PageProps) {
                 )}
             </div>
 
-            <div style={{ overflowX: "auto" }}>
-                <table
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        backgroundColor: "white",
-                        border: "1px solid #ccc",
-                        tableLayout: "fixed",
-                    }}
-                >
-                    <thead>
-                    <tr style={{ backgroundColor: "#f5f5f5" }}>
-                        {columns.map((col) => (
-                            <th
-                                key={col}
-                                className={fors.className}
-                                style={{
-                                    textAlign: "left",
-                                    padding: "12px",
-                                    borderBottom: "1px solid #ccc",
-                                }}
-                            >
-                                {col}
-                            </th>
-                        ))}
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {rows.map((row, i) => (
-                        <tr key={i}>
-                            {columns.map((col) => (
-                                <td
-                                    key={col}
-                                    className={fors.className}
-                                    style={{
-                                        padding: "12px",
-                                        borderBottom: "1px solid #eee",
-                                        verticalAlign: "top",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            maxHeight: "80px",
-                                            maxWidth: "220px",
-                                            overflow: "auto",
-                                            whiteSpace: "pre-wrap",
-                                            wordBreak: "break-word",
-                                        }}
-                                    >
-                                        {row[col] === null || row[col] === undefined
-                                            ? "—"
-                                            : typeof row[col] === "object"
-                                                ? JSON.stringify(row[col], null, 2)
-                                                : String(row[col])}
-                                    </div>
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+            <ExpandableTable rows={rows} columns={columns} />
         </main>
     );
 }

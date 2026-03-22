@@ -22,8 +22,8 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
 
     const { data, error } = await supabase
         .from("llm_model_responses")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {

@@ -16,18 +16,36 @@ async function updateHumorFlavorMix(formData: FormData) {
 
     const supabase = await createClient();
 
+    const {
+        data: { user },
+        error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+        throw new Error("User must be logged in.");
+    }
+
     const id = formData.get("id");
     if (!id) {
         throw new Error("Missing id");
     }
 
     const filteredEntries = Array.from(formData.entries()).filter(
-        ([key, value]) => !key.startsWith("$") && key !== "id" && value !== ""
+        ([key, value]) =>
+            !key.startsWith("$") &&
+            key !== "id" &&
+            key !== "created_by_user_id" &&
+            key !== "modified_by_user_id" &&
+            key !== "created_datetime_utc" &&
+            key !== "modified_datetime_utc" &&
+            value !== ""
     );
 
     const payload: Record<string, string | null> = Object.fromEntries(
         filteredEntries.map(([key, value]) => [key, String(value)])
     );
+
+    payload.modified_by_user_id = user.id;
 
     const { error } = await supabase
         .from("humor_flavor_mix")
@@ -53,8 +71,8 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
 
     const { data, error } = await supabase
         .from("humor_flavor_mix")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
@@ -70,7 +88,12 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
     const editableColumns = columns.filter(
-        (col) => col !== "id" && col !== "created_datetime_utc"
+        (col) =>
+            col !== "id" &&
+            col !== "created_by_user_id" &&
+            col !== "modified_by_user_id" &&
+            col !== "created_datetime_utc" &&
+            col !== "modified_datetime_utc"
     );
 
     return (
@@ -115,8 +138,8 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the <strong>id</strong> and only the fields you want to
-                    change.
+                    Fill in the existing <strong>id</strong> and only the fields you want to
+                    update.
                 </div>
 
                 <form action={updateHumorFlavorMix} style={formGridStyle}>
@@ -199,9 +222,6 @@ const buttonStyle: React.CSSProperties = {
     alignSelf: "end",
     width: "fit-content",
 };
-
-
-
 
 const navButtonStyle: CSSProperties = {
     textDecoration: "none",

@@ -20,10 +20,10 @@ export default async function HumorFlavorStepsPage({ searchParams }: PageProps) 
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
         .from("humor_flavor_steps")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" }) // ✅ includes ALL columns (including your 4 new ones)
+        .order("created_datetime_utc", { ascending: false }) // ✅ stable pagination
         .range(from, to);
 
     if (error) {
@@ -38,6 +38,9 @@ export default async function HumorFlavorStepsPage({ searchParams }: PageProps) 
     const rows = data ?? [];
     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
+    const totalRows = count ?? 0;
+    const hasNextPage = to + 1 < totalRows;
+
     return (
         <main style={{ padding: 24, minHeight: "100vh" }}>
             <h1 className={adelia.className}>Humor Flavor Steps</h1>
@@ -50,7 +53,7 @@ export default async function HumorFlavorStepsPage({ searchParams }: PageProps) 
                     fontSize: 16,
                 }}
             >
-                Page {page} ({rows.length} rows loaded)
+                Showing page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -77,7 +80,7 @@ export default async function HumorFlavorStepsPage({ searchParams }: PageProps) 
                     </Link>
                 )}
 
-                {rows.length === pageSize && (
+                {hasNextPage && (
                     <Link
                         href={{
                             pathname: "/",

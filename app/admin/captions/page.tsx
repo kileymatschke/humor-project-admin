@@ -22,8 +22,8 @@ export default async function CaptionsPage({ searchParams }: PageProps) {
 
     const { data, error } = await supabase
         .from("captions")
-        .select("*")
-        .order("id", { ascending: true })
+        .select("*", { count: "exact" })
+        .order("created_datetime_utc", { ascending: false })
         .range(from, to);
 
     if (error) {
