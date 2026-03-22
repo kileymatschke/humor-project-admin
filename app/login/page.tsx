@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/browser";
 import { adelia } from "../admin/fonts/fonts";
 import { kindergarten } from "../admin/fonts/fonts";
 
-export default function LoginPage() {
+function LoginContent() {
     const supabase = createClient();
     const searchParams = useSearchParams();
 
@@ -39,7 +40,6 @@ export default function LoginPage() {
                 Sign in
             </h1>
 
-            {/* ✅ ERROR MESSAGE */}
             {errorMessage && (
                 <p
                     style={{
@@ -64,5 +64,13 @@ export default function LoginPage() {
                 Sign in with Google
             </button>
         </main>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginContent />
+        </Suspense>
     );
 }
