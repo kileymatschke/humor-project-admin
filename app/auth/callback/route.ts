@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
         const deniedUrl = new URL("/login", url.origin);
         deniedUrl.searchParams.set(
             "error",
-            "Superadmin status required for login."
+            "Superadmin status required to access admin area."
         );
 
         return NextResponse.redirect(deniedUrl);
