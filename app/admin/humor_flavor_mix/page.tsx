@@ -130,7 +130,7 @@ export default async function HumorFlavorMixPage({ searchParams }: PageProps) {
             </div>
 
             <section style={sectionStyle}>
-                <h2 className={kindergarten.className} style={sectionTitleStyle}>
+                <h2 className={fors.className} style={sectionTitleStyle}>
                     Update Humor Flavor Mix
                 </h2>
 

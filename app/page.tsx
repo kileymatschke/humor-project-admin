@@ -163,7 +163,7 @@ export default async function Home({
                 }}
             >
                 <h1 className={adelia.className} style={{ marginTop: 42, marginBottom: 12 }}>
-                    Dashboard
+                    Admin Panel
                 </h1>
 
                 <div style={{ marginBottom: 20 }}>
