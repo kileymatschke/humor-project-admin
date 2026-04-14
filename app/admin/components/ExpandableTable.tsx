@@ -112,7 +112,7 @@ export default function ExpandableTable({
                     }}
                 >
                     <thead>
-                    <tr style={{ backgroundColor: "#f5f5f5" }}>
+                    <tr style={{ backgroundColor: "#F7F9ED" }}>
                         {columns.map((col) => (
                             <th
                                 key={col}

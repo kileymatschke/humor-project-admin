@@ -1,6 +1,6 @@
 import { createClient } from "../../../lib/supabase/server";
 import { redirect } from "next/navigation";
-import { adelia, kindergarten } from "../fonts/fonts";
+import { adelia, kindergarten, fors } from "../fonts/fonts";
 
 const cardData = [
     { label: "Users", table: "profiles", className: "anim1" },
@@ -9,7 +9,7 @@ const cardData = [
     { label: "Captions", table: "captions", className: "anim1" },
     { label: "Humor Flavors", table: "humor_flavors", className: "anim2" },
     { label: "Humor Flavor Steps", table: "humor_flavor_steps", className: "anim3" },
-    { label: "Humor Flavor Mix", table: "humor_flavor_mix", className: "anim1" },
+    { label: "Humor Flavor Mixes", table: "humor_flavor_mix", className: "anim1" },
     { label: "Caption Requests", table: "caption_requests", className: "anim2" },
     { label: "LLM Prompt Chains", table: "llm_prompt_chains", className: "anim3" },
     { label: "LLM Model Responses", table: "llm_model_responses", className: "anim1" },
@@ -79,10 +79,10 @@ export default async function CardsPage() {
                     width: 100%;
                     border-radius: 18px;
                     padding: 18px 18px 14px;
-                    border: 2px solid rgba(0,0,0,0.12);
+                    border: 2px solid #EDF3FA;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.10);
                     backdrop-filter: blur(6px);
-                    background: rgba(255,255,255,0.78);
+                    background: #EDF3FA;
                 }
 
                 .count {
@@ -91,11 +91,13 @@ export default async function CardsPage() {
                     line-height: 1;
                     letter-spacing: -0.02em;
                     margin: 6px 0 10px;
+                    color: #2D7DD2;
                 }
 
                 .cardLabel {
                     font-size: clamp(14px, 2vw, 18px);
                     font-weight: 800;
+                    color: #2D7DD2;
                     line-height: 1.2;
                 }
 

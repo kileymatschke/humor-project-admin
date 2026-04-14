@@ -18,8 +18,10 @@ export default function SignOutButton() {
                 marginTop: 20,
                 padding: "8px 16px",
                 borderRadius: 6,
-                border: "1px solid black",
+                border: "1px solid #FFBE1A",
                 cursor: "pointer",
+                background: "#FFF8E5",
+                color: "#F4AF00"
             }}
         >
             Sign Out

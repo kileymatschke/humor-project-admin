@@ -420,114 +420,125 @@ export default async function AdminImagesPage({
     }
 
     return (
-        <main style={{ padding: 24 }}>
+        <main style={{ padding: 24, color: "#83932D" }}>
             <h1 className={adelia.className}>Images</h1>
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Add Image
+                    Add image
                 </h2>
 
                 <form
                     action={createImageEntry}
-                    style={{ ...formGridStyle, maxWidth: 900 }}
+                    style={{ ...formGridStyle, maxWidth: 920 }}
                 >
                     <label className={fors.className} style={fieldLabelStyle}>
-                        <span>Image File</span>
+                        <span>Image file (accepts .jpg,.jpeg,.png,.webp,.gif,.heic)</span>
                         <input
                             type="file"
                             name="imageFile"
                             accept=".jpg,.jpeg,.png,.webp,.gif,.heic,image/jpeg,image/jpg,image/png,image/webp,image/gif,image/heic"
-                            style={{ padding: 8 }}
+                            style={{ ...textInputStyle, padding: 8 }}
                             className={fors.className}
                             required
                         />
                     </label>
 
-                    {/*<div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>*/}
-                    {/*    <label className={fors.className} style={fieldLabelStyle}>*/}
-                    {/*        <span>Is Common Use?</span>*/}
-                    {/*        <select*/}
-                    {/*            name="is_common_use"*/}
-                    {/*            defaultValue="false"*/}
-                    {/*            style={selectStyle}*/}
-                    {/*            className={fors.className}*/}
-                    {/*            required*/}
-                    {/*        >*/}
-                    {/*            <option value="false">False</option>*/}
-                    {/*            <option value="true">True</option>*/}
-                    {/*        </select>*/}
-                    {/*    </label>*/}
+                    {/* Uncomment if you want these back with labels too */}
+                    {/*
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Is common use?</span>
+                        <select
+                            name="is_common_use"
+                            defaultValue="false"
+                            style={selectStyle}
+                            className={fors.className}
+                            required
+                        >
+                            <option value="false">False</option>
+                            <option value="true">True</option>
+                        </select>
+                    </label>
 
-                    {/*    <label className={fors.className} style={fieldLabelStyle}>*/}
-                    {/*        <span>Is Public?</span>*/}
-                    {/*        <select*/}
-                    {/*            name="is_public"*/}
-                    {/*            defaultValue="false"*/}
-                    {/*            style={selectStyle}*/}
-                    {/*            className={fors.className}*/}
-                    {/*            required*/}
-                    {/*        >*/}
-                    {/*            <option value="false">False</option>*/}
-                    {/*            <option value="true">True</option>*/}
-                    {/*        </select>*/}
-                    {/*    </label>*/}
-                    {/*</div>*/}
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Is public?</span>
+                        <select
+                            name="is_public"
+                            defaultValue="false"
+                            style={selectStyle}
+                            className={fors.className}
+                            required
+                        >
+                            <option value="false">False</option>
+                            <option value="true">True</option>
+                        </select>
+                    </label>
 
-                    {/*<label className={fors.className} style={fieldLabelStyle}>*/}
-                    {/*    <span>Additional Context</span>*/}
-                    {/*    <textarea*/}
-                    {/*        name="additional_context"*/}
-                    {/*        placeholder="Optional notes about the image..."*/}
-                    {/*        rows={4}*/}
-                    {/*        style={textareaStyle}*/}
-                    {/*        className={fors.className}*/}
-                    {/*    />*/}
-                    {/*</label>*/}
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Additional context</span>
+                        <textarea
+                            name="additional_context"
+                            placeholder="Optional notes about the image..."
+                            rows={4}
+                            style={textareaStyle}
+                            className={fors.className}
+                        />
+                    </label>
 
-                    {/*<label className={fors.className} style={fieldLabelStyle}>*/}
-                    {/*    <span>Image Description (Optional)</span>*/}
-                    {/*    <textarea*/}
-                    {/*        name="image_description"*/}
-                    {/*        placeholder="Optional image description..."*/}
-                    {/*        rows={4}*/}
-                    {/*        style={textareaStyle}*/}
-                    {/*        className={fors.className}*/}
-                    {/*    />*/}
-                    {/*</label>*/}
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Image description</span>
+                        <textarea
+                            name="image_description"
+                            placeholder="Optional image description..."
+                            rows={4}
+                            style={textareaStyle}
+                            className={fors.className}
+                        />
+                    </label>
+                    */}
 
                     <button
                         type="submit"
                         style={primaryButtonStyle}
                         className={fors.className}
                     >
-                        Create
+                        Upload
                     </button>
                 </form>
             </section>
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Update Existing Image
+                    Update existing image
                 </h2>
 
                 <form
                     action={updateImageByUrl}
-                    style={{ ...formGridStyle, maxWidth: 900 }}
+                    style={{ ...formGridStyle, maxWidth: 920 }}
                     className={fors.className}
                 >
-                    <input
-                        name="oldUrl"
-                        placeholder="Old Image URL"
-                        style={textInputStyle}
-                        className={fors.className}
-                    />
-                    <input
-                        name="newUrl"
-                        placeholder="New Image URL"
-                        style={textInputStyle}
-                        className={fors.className}
-                    />
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Old image URL</span>
+                        <input
+                            name="oldUrl"
+                            // placeholder="https://images.almostcrackd.ai/..."
+                            style={textInputStyle}
+                            className={fors.className}
+                            required
+                        />
+                    </label>
+
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>New image URL</span>
+                        <input
+                            name="newUrl"
+                            // placeholder="https://images.almostcrackd.ai/..."
+                            style={textInputStyle}
+                            className={fors.className}
+                            required
+                        />
+                    </label>
+
                     <button
                         type="submit"
                         style={primaryButtonStyle}
@@ -540,16 +551,21 @@ export default async function AdminImagesPage({
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Delete Image by URL
+                    Delete image
                 </h2>
 
                 <form action={deleteImageByUrl} style={inlineFormStyle}>
-                    <input
-                        name="url"
-                        placeholder="https://images.almostcrackd.ai/..."
-                        style={{ ...textInputStyle, flex: 1, minWidth: 260 }}
-                        className={fors.className}
-                    />
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Image URL</span>
+                        <input
+                            name="url"
+                            // placeholder="https://images.almostcrackd.ai/..."
+                            style={{ ...textInputStyle, maxWidth: 900 }}
+                            className={fors.className}
+                            required
+                        />
+                    </label>
+
                     <button
                         type="submit"
                         style={dangerButtonStyle}
@@ -562,24 +578,29 @@ export default async function AdminImagesPage({
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Display Image by URL
+                    View image
                 </h2>
 
                 <form method="get" style={inlineFormStyle}>
                     <input type="hidden" name="section" value="images" />
-                    <input
-                        name="lookup"
-                        defaultValue={lookupUrl}
-                        placeholder="https://images.almostcrackd.ai/..."
-                        style={{ ...textInputStyle, flex: 1, minWidth: 260 }}
-                        className={fors.className}
-                    />
+
+                    <label className={fors.className} style={fieldLabelStyle}>
+                        <span>Image URL</span>
+                        <input
+                            name="lookup"
+                            defaultValue={lookupUrl}
+                            // placeholder="https://images.almostcrackd.ai/..."
+                            style={{ ...textInputStyle, maxWidth: 900 }}
+                            className={fors.className}
+                        />
+                    </label>
+
                     <button
                         type="submit"
                         style={primaryButtonStyle}
                         className={fors.className}
                     >
-                        Display
+                        View
                     </button>
                 </form>
 
@@ -609,16 +630,19 @@ export default async function AdminImagesPage({
                 )}
             </section>
 
-            <section style={sectionStyle}>
-                <h2 className={fors.className} style={sectionTitleStyle}>
-                    Images Table
-                </h2>
-
+            <section
+                style={{
+                    marginBottom: 28,
+                    padding: 0,
+                    border: "none",
+                    backgroundColor: "transparent",
+                }}
+            >
                 <div
                     className={fors.className}
                     style={{ marginTop: 8, marginBottom: 16, fontSize: 16 }}
                 >
-                    Showing page {page} ({rows.length} rows loaded)
+                    Page {page} ({rows.length} rows loaded)
                 </div>
 
                 <div
@@ -683,9 +707,9 @@ export default async function AdminImagesPage({
 const sectionStyle: React.CSSProperties = {
     marginBottom: 28,
     padding: 16,
-    border: "1px solid #ddd",
+    border: "1px solid #ccc",
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#F7F9ED",
 };
 
 const sectionTitleStyle: React.CSSProperties = {
@@ -702,12 +726,12 @@ const inlineFormStyle: React.CSSProperties = {
     display: "flex",
     gap: 12,
     flexWrap: "wrap",
-    alignItems: "center",
+    alignItems: "end",
 };
 
 const fieldLabelStyle: React.CSSProperties = {
     display: "grid",
-    gap: 4,
+    gap: 6,
 };
 
 const textInputStyle: React.CSSProperties = {
@@ -725,29 +749,36 @@ const textareaStyle: React.CSSProperties = {
 const selectStyle: React.CSSProperties = {
     padding: 8,
     borderRadius: 6,
+    border: "1px solid #ccc",
 };
 
 const primaryButtonStyle: React.CSSProperties = {
     width: "fit-content",
-    fontSize: "15px",
-    fontWeight: "bold",
+    textDecoration: "none",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#EDF3FA",
 };
 
 const dangerButtonStyle: React.CSSProperties = {
-    border: "1px solid #c00",
-    color: "#c00",
-    fontSize: "15px",
-    fontWeight: "bold",
-    backgroundColor: "transparent",
+    textDecoration: "none",
+    color: "#C0678C",
+    fontWeight: 600,
+    border: "1px solid #C0678C",
     padding: "8px 14px",
     borderRadius: "10px",
+    backgroundColor: "rgba(192,103,140,0.08)",
 };
 
 const navButtonStyle: React.CSSProperties = {
     textDecoration: "none",
-    color: "black",
-    border: "1px solid #ccc",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
     padding: "8px 14px",
     borderRadius: "10px",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#EDF3FA",
 };

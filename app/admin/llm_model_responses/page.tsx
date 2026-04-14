@@ -39,7 +39,7 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
     const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
     return (
-        <main style={{ padding: 24, minHeight: "100vh" }}>
+        <main style={{ padding: 24, minHeight: "100vh", color: "#83932D" }}>
             <h1 className={adelia.className}>LLM Model Responses</h1>
 
             <div
@@ -50,7 +50,7 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -101,9 +101,10 @@ export default async function LlmModelResponsesPage({ searchParams }: PageProps)
 
 const navButtonStyle: React.CSSProperties = {
     textDecoration: "none",
-    color: "black",
-    border: "1px solid #ccc",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
     padding: "8px 14px",
     borderRadius: "10px",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#EDF3FA",
 };

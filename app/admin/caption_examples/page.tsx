@@ -165,12 +165,12 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
     const hasNextPage = to + 1 < totalRows;
 
     return (
-        <main style={{ padding: 24, minHeight: "100vh" }}>
+        <main style={{ padding: 24, minHeight: "100vh", color: "#83932D" }}>
             <h1 className={adelia.className}>Caption Examples</h1>
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Create Caption Example
+                    Create caption example
                 </h2>
 
                 <form action={createCaptionExample} style={formGridStyle}>
@@ -193,15 +193,15 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Update Caption Example
+                    Update existing caption example
                 </h2>
 
                 <div
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the existing <strong>id</strong> and only the fields you want to
-                    update.
+                    Fill in the existing <strong>id</strong> and any fields you want to
+                    update:
                 </div>
 
                 <form action={updateCaptionExample} style={formGridStyle}>
@@ -229,16 +229,19 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Delete Caption Example
+                    Delete caption example
                 </h2>
 
                 <form action={deleteCaptionExample} style={inlineFormStyle}>
-                    <input
-                        name="id"
-                        placeholder="Enter id"
-                        style={inputStyle}
-                        required
-                    />
+                    <label style={labelStyle}>
+                        <span className={fors.className}>id</span>
+                        <input
+                            name="id"
+                            style={inputStyle}
+                            required
+                        />
+                    </label>
+
                     <button
                         type="submit"
                         className={fors.className}
@@ -257,7 +260,7 @@ export default async function CaptionExamplesPage({ searchParams }: PageProps) {
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <div
@@ -311,7 +314,7 @@ const sectionStyle: CSSProperties = {
     padding: 16,
     border: "1px solid #ddd",
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#F7F9ED",
 };
 
 const sectionTitleStyle: CSSProperties = {
@@ -338,24 +341,27 @@ const inputStyle: CSSProperties = {
 };
 
 const buttonStyle: CSSProperties = {
-    padding: "6px 10px",
-    border: "1px solid #ccc",
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
     cursor: "pointer",
-    fontSize: 14,
     alignSelf: "end",
     width: "fit-content",
+    textDecoration: "none",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#EDF3FA",
 };
 
 const deleteButtonStyle: CSSProperties = {
-    padding: "10px 14px",
-    border: "1px solid #c00",
-    borderRadius: 8,
-    backgroundColor: "#fff5f5",
-    color: "#c00",
-    cursor: "pointer",
-    fontSize: 14,
+    alignSelf: "end",
+    textDecoration: "none",
+    color: "#C0678C",
+    fontWeight: 600,
+    border: "1px solid #C0678C",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "rgba(192,103,140,0.08)",
 };
 
 const inlineFormStyle: CSSProperties = {
@@ -365,11 +371,12 @@ const inlineFormStyle: CSSProperties = {
     flexWrap: "wrap",
 };
 
-const navButtonStyle: CSSProperties = {
+const navButtonStyle: React.CSSProperties = {
     textDecoration: "none",
-    color: "black",
-    border: "1px solid #ccc",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
     padding: "8px 14px",
     borderRadius: "10px",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#EDF3FA",
 };

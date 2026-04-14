@@ -168,7 +168,7 @@ export default async function WhitelistEmailAddressesPage({
     );
 
     return (
-        <main style={{ padding: 24, minHeight: "100vh" }}>
+        <main style={{ padding: 24, minHeight: "100vh", color: "#83932D" }}>
             <h1 className={adelia.className}>Whitelist Email Addresses</h1>
 
             {/*<div*/}
@@ -211,7 +211,7 @@ export default async function WhitelistEmailAddressesPage({
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Create Whitelist Email Address
+                    Create whitelist email address
                 </h2>
 
                 <form action={createWhitelistEmailAddress} style={formGridStyle}>
@@ -234,14 +234,14 @@ export default async function WhitelistEmailAddressesPage({
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Update Whitelist Email Address
+                    Update whitelist email address
                 </h2>
 
                 <div
                     className={fors.className}
                     style={{ marginBottom: 12, fontSize: 14 }}
                 >
-                    Fill in the existing <strong>id</strong> and new <strong>email_address</strong> you want to update to.
+                    Fill in the existing <strong>id</strong> and new <strong>email_address</strong> you want to update to:
                 </div>
 
                 <form action={updateWhitelistEmailAddress} style={formGridStyle}>
@@ -269,16 +269,18 @@ export default async function WhitelistEmailAddressesPage({
 
             <section style={sectionStyle}>
                 <h2 className={fors.className} style={sectionTitleStyle}>
-                    Delete Whitelist Email Address
+                    Delete whitelist email address
                 </h2>
 
                 <form action={deleteWhitelistEmailAddress} style={inlineFormStyle}>
-                    <input
-                        name="id"
-                        placeholder="Enter id"
-                        style={inputStyle}
-                        required
-                    />
+                    <label style={labelStyle}>
+                        <span className={fors.className}>id</span>
+                        <input
+                            name="id"
+                            style={inputStyle}
+                            required
+                        />
+                    </label>
                     <button
                         type="submit"
                         className={fors.className}
@@ -297,7 +299,7 @@ export default async function WhitelistEmailAddressesPage({
                     fontSize: 16,
                 }}
             >
-                Showing page {page} ({rows.length} rows loaded)
+                Page {page} ({rows.length} rows loaded)
             </div>
 
             <ExpandableTable rows={rows} columns={columns} />
@@ -310,7 +312,7 @@ const sectionStyle: React.CSSProperties = {
     padding: 16,
     border: "1px solid #ddd",
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#F7F9ED",
 };
 
 const sectionTitleStyle: React.CSSProperties = {
@@ -344,26 +346,35 @@ const inputStyle: React.CSSProperties = {
 };
 
 const buttonStyle: React.CSSProperties = {
-    padding: "6px 10px",
-    border: "1px solid #ccc",
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
     cursor: "pointer",
-    fontSize: 14,
     alignSelf: "end",
     width: "fit-content",
+    textDecoration: "none",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#EDF3FA",
 };
 
 const deleteButtonStyle: React.CSSProperties = {
-    ...buttonStyle,
-    backgroundColor: "#ffe5e5",
+    textDecoration: "none",
+    alignSelf: "end",
+    color: "#C0678C",
+    fontWeight: 600,
+    border: "1px solid #C0678C",
+    padding: "8px 14px",
+    borderRadius: "10px",
+    backgroundColor: "rgba(192,103,140,0.08)",
 };
 
 const navButtonStyle: React.CSSProperties = {
     textDecoration: "none",
-    color: "black",
-    border: "1px solid #ccc",
+    color: "#2D7DD2",
+    fontWeight: 600,
+    border: "1px solid #2D7DD2",
     padding: "8px 14px",
     borderRadius: "10px",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#EDF3FA",
 };

@@ -34,17 +34,18 @@ function LoginContent() {
                 justifyContent: "center",
                 alignItems: "center",
                 gap: "20px",
+                color: "#F4AF00"
             }}
         >
-            <h1 style={{ fontSize: "40px" }} className={adelia.className}>
-                Sign in
+            <h1 style={{ fontSize: "30px" }} className={adelia.className}>
+                The Humor Project: Admin Dashboard
             </h1>
 
             {errorMessage && (
                 <p
                     style={{
-                        color: "#DE89BE",
-                        fontSize: "24px",
+                        color: "#C0678C",
+                        fontSize: "20px",
                         textAlign: "center",
                         maxWidth: "500px",
                         fontWeight: "bold",
@@ -58,8 +59,18 @@ function LoginContent() {
 
             <button
                 onClick={signInWithGoogle}
-                style={{ fontSize: "20px", fontWeight: "bold" }}
                 className={kindergarten.className}
+                style={{
+                    marginTop: 20,
+                    padding: "8px 16px",
+                    borderRadius: 6,
+                    border: "1px solid #FFBE1A",
+                    cursor: "pointer",
+                    background: "#FFF8E5",
+                    color: "#F4AF00",
+                    fontSize: "24px",
+                    fontWeight: "bold"
+                }}
             >
                 Sign in with Google
             </button>
