@@ -163,7 +163,12 @@ export default async function Home({
                     overflowY: "auto",
                 }}
             >
-                <h1 className={adelia.className} style={{ marginTop: 42, marginBottom: 12, color: "#83932D" }}>
+
+                <p className={fors.className} style={{ fontSize: 14, fontWeight: 1000, marginTop: 42, color: "#83932D" }}>
+                    THE HUMOR PROJECT:
+                </p>
+
+                <h1 className={adelia.className} style={{ marginBottom: 12, color: "#83932D" }}>
                     Admin Dashboard
                 </h1>
 

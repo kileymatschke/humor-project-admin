@@ -38,7 +38,7 @@ function LoginContent() {
             }}
         >
             <h1 style={{ fontSize: "30px" }} className={adelia.className}>
-                The Humor Project: Admin Dashboard
+                The Humor Project:<br /> Admin Dashboard
             </h1>
 
             {errorMessage && (
@@ -61,7 +61,7 @@ function LoginContent() {
                 onClick={signInWithGoogle}
                 className={kindergarten.className}
                 style={{
-                    marginTop: 20,
+                    marginTop: 2,
                     padding: "8px 16px",
                     borderRadius: 6,
                     border: "1px solid #FFBE1A",
